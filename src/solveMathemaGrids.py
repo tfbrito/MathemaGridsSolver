@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
-<<<<<<< HEAD
- 
+
 import sys
 from collections import Counter
 from pyparsing import Word, Literal, nums, Forward, ParseException
