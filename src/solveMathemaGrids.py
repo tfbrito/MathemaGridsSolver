@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+<<<<<<< HEAD
  
 import sys
 from collections import Counter
