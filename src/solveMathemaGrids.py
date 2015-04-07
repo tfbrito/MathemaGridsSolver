@@ -3,7 +3,8 @@
 import sys
 from collections import Counter
 from pyparsing import Word, Literal, nums, Forward, ParseException
- 
+
+import parser
 sys.path
  
 from z3 import *
@@ -77,7 +78,7 @@ for i in X:
     print i
 #Regras
 
-# só podem ser número de 1 a 9
+# sï¿½ podem ser nï¿½mero de 1 a 9
 de_1_a_9  = [ And(1 <= X[j][i], X[j][i] <= x_membros*y_membros) for i in range(x_membros) for j in range(y_membros) ]
  
  
@@ -119,12 +120,16 @@ for i in range(0,len(table)-1,2):
         if(j!=0 and j%3==0 and j!=len(table[i])-1):
             equacao_aux="("+equacao_aux+")"+str(table[i][j])
         else:
-            equacao_aux+=str(table[i][j])
+            if(table[i][j]=='.'):
+                equacao_aux += "X["+str(i/2)+"]["+str(j/2)+"]"
+            else:
+                equacao_aux += str(table[i][j])
+    equacao_aux=equacao_aux.replace("=", "==")
     print equacao_aux
-    equacoes_horizontais.append(equacao_aux)
+    equacoes_horizontais.append(eval(equacao_aux))
     equacao_aux=""
 
-print "Imprissao das equiacoes verticais"	
+print "Imprissao das equiacoes verticais"
 equacoes_verticais=[]
 equacao_aux=""
 for i in range(0,len(table)-2,2):
@@ -132,12 +137,16 @@ for i in range(0,len(table)-2,2):
         if(j!=0 and j%3==0 and j!=len(table[i])-1):
             equacao_aux="("+equacao_aux+")"+str(table[j][i])
         else:
-            equacao_aux+=str(table[j][i])
+            if(table[j][i]=='.'):
+                equacao_aux += "X["+str(j/2)+"]["+str(i/2)+"]"
+            else:
+                equacao_aux += str(table[j][i])
+    equacao_aux=equacao_aux.replace("=", "==")
     print equacao_aux
-    equacoes_verticais.append(equacao_aux)
+    equacoes_verticais.append(eval(equacao_aux))
     equacao_aux=""
 
-#Cada número é unico na matriz
+#Cada nï¿½mero ï¿½ unico na matriz
 num_unico = [ Distinct([X[j][i] for i in range(x_membros)  for j in range(y_membros)]) ]
 
 print "numero unico"
@@ -149,15 +158,18 @@ solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes
 print "ate aqui tudo bem "
 
 #como se faz a instancia ??? ver exemplo do A 
-instancia = [ If(table[i][j] == 0, 
-                  True, 
-                  X[i][j] == table[i][j]) 
-               for i in range(x_membros) for j in range(y_membros)]
+#instancia = [ If(table[i][j] == 0,
+#                  True,
+#                  X[i][j] == table[i][j])
+#               for i in range(x_membros) for j in range(y_membros)]
 			   
 s=Solver()
 print "ate aqui tudo bem "
 
+
+
 s.add(solveMathemaGrid)
+
 print "\nSolucao:\n"
 if s.check() == sat:
     m = s.model()
