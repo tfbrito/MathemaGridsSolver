@@ -112,7 +112,7 @@ for i in range(0,len(table)-1,2):
 for i in table:
     print i
 
-print "Imprissao das equiacoes horizontais"	
+print "Imprissao das equacoes horizontais"	
 equacoes_horizontais=[]
 equacao_aux=""
 for i in range(0,len(table)-1,2):
@@ -129,7 +129,7 @@ for i in range(0,len(table)-1,2):
     equacoes_horizontais.append(eval(equacao_aux))
     equacao_aux=""
 
-print "Imprissao das equiacoes verticais"
+print "Imprissao das equacoes verticais"
 equacoes_verticais=[]
 equacao_aux=""
 for i in range(0,len(table)-2,2):
@@ -158,15 +158,13 @@ solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes
 print "ate aqui tudo bem "
 
 #como se faz a instancia ??? ver exemplo do A 
-#instancia = [ If(table[i][j] == 0,
-#                  True,
-#                  X[i][j] == table[i][j])
-#               for i in range(x_membros) for j in range(y_membros)]
+instancia = [ If(table[i][j] == "."),
+                  True,
+                  X[i][j] == table[i][j])
+               for i in range(x_membros) for j in range(y_membros)]
 			   
 s=Solver()
 print "ate aqui tudo bem "
-
-
 
 s.add(solveMathemaGrid)
 
