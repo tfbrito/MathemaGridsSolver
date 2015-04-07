@@ -8,6 +8,8 @@ import parser
 sys.path
  
 from z3 import *
+
+import copy
  
 integer = Word(nums)  # simple unsigned integer
 arithOp = Word("+-*/", max=1)  # arithmetic operators
@@ -68,24 +70,14 @@ print "==================\nFIM INPUT\n=================="
  
 x_membros = (len(table[0]) - 1) / 2
 y_membros = (len(table) - 1) / 2
- 
-print "Membros a preencher na horizontal:", x_membros
-print "Membros a preencher na vertical:", y_membros
- 
+
 X = [[Int("x_%s_%s" % (i + 1, j + 1)) for i in range(x_membros)]for j in range(y_membros)]
- 
-for i in X:
-    print i
+
 #Regras
 
 # s� podem ser n�mero de 1 a 9
 de_1_a_9  = [ And(1 <= X[j][i], X[j][i] <= x_membros*y_membros) for i in range(x_membros) for j in range(y_membros) ]
- 
- 
-print "Regras para os numeros serem escritos de 1 a 9"
-for i in de_1_a_9:
-    print i;
- 
+
 div_mult_por_1 = []
 for i in range(len(table)):
     for j in range(len(table[i])):
@@ -94,81 +86,85 @@ for i in range(len(table)):
                 div_mult_por_1.append(Not(X[i/2][(j+1)/2] == 1))
             else:
                 div_mult_por_1.append(Not(X[(i+1)/2][j/2] ==1))
-print "Regras para nao se poder dividir e multiplicar por 1"
-for i in div_mult_por_1:
-    print i;
- 
- 
+
+
 x=0
 y=0
-print "imprimir as posicoes e os numeros:"
-for i in range(0,len(table)-1,2):
-    for j in range(0,len(table[i])-1,2):
-        table[i][j]=X[x][y]
+table2=[]
+
+for i in range(len(table)):
+    table2.append([])
+    for j in range(len(table[i])):
+        table2[i].append(table[i][j])
+
+for i in range(0,len(table2)-1,2):
+    for j in range(0,len(table2[i])-1,2):
+        table2[i][j]=X[x][y]
         y+=1
     x+=1
     y=0
- 
-for i in table:
-    print i
 
-print "Imprissao das equiacoes horizontais"	
 equacoes_horizontais=[]
 equacao_aux=""
-for i in range(0,len(table)-1,2):
-    for j in range(len(table[i])):
-        if(j!=0 and j%3==0 and j!=len(table[i])-1):
-            equacao_aux="("+equacao_aux+")"+str(table[i][j])
+for i in range(0,len(table2)-1,2):
+    for j in range(len(table2[i])):
+        if(j!=0 and j%3==0 and j!=len(table2[i])-1):
+            equacao_aux="("+equacao_aux+")"+str(table2[i][j])
         else:
-            if(table[i][j]=='.'):
+            if(table2[i][j]=='.'):
                 equacao_aux += "X["+str(i/2)+"]["+str(j/2)+"]"
             else:
-                equacao_aux += str(table[i][j])
+                equacao_aux += str(table2[i][j])
     equacao_aux=equacao_aux.replace("=", "==")
-    print equacao_aux
     equacoes_horizontais.append(eval(equacao_aux))
     equacao_aux=""
 
-print "Imprissao das equiacoes verticais"
+
 equacoes_verticais=[]
 equacao_aux=""
-for i in range(0,len(table)-2,2):
-    for j in range(len(table[i])):
-        if(j!=0 and j%3==0 and j!=len(table[i])-1):
-            equacao_aux="("+equacao_aux+")"+str(table[j][i])
+for i in range(0,len(table2)-2,2):
+    for j in range(len(table2[i])):
+        if(j!=0 and j%3==0 and j!=len(table2[i])-1):
+            equacao_aux="("+equacao_aux+")"+str(table2[j][i])
         else:
-            if(table[j][i]=='.'):
+            if(table2[j][i]=='.'):
                 equacao_aux += "X["+str(j/2)+"]["+str(i/2)+"]"
             else:
-                equacao_aux += str(table[j][i])
+                equacao_aux += str(table2[j][i])
     equacao_aux=equacao_aux.replace("=", "==")
-    print equacao_aux
     equacoes_verticais.append(eval(equacao_aux))
     equacao_aux=""
 
 #Cada n�mero � unico na matriz
 num_unico = [ Distinct([X[j][i] for i in range(x_membros)  for j in range(y_membros)]) ]
 
-print "numero unico"
-for i in num_unico:
-    print i;
-	
+#como se faz a instancia ??? ver exemplo do A
+instancia = [ If(table[i*2][j*2] is '.',
+                  True,
+                  X[i][j] == table[i*2][j*2])
+               for i in range(x_membros) for j in range(y_membros) ]
+
 solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes_verticais
- 
-print "ate aqui tudo bem "
 
-#como se faz a instancia ??? ver exemplo do A 
-#instancia = [ If(table[i][j] == 0,
-#                  True,
-#                  X[i][j] == table[i][j])
-#               for i in range(x_membros) for j in range(y_membros)]
-			   
-s=Solver()
-print "ate aqui tudo bem "
+s = Solver()
 
+s.add(solveMathemaGrid+instancia)
 
+print "\nConstraints\n"
+for i in de_1_a_9:
+    print i
 
-s.add(solveMathemaGrid)
+for i in num_unico:
+    print i
+
+for i in div_mult_por_1:
+    print i
+
+for i in equacoes_horizontais:
+    print i
+
+for i in equacoes_verticais:
+    print i
 
 print "\nSolucao:\n"
 if s.check() == sat:
@@ -177,3 +173,5 @@ if s.check() == sat:
           for i in range(y_membros) ]
     for l in r:
         print l
+else:
+    print "\nimpossivel resolver\n"
