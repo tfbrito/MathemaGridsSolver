@@ -56,28 +56,29 @@ while (line != ""):
                 line = f.readline()
                 table = table + [lastLine.parseString(line)]
             except ParseException:
-                print "erro na ?ltima linha!"
+                print "Error on last line"
         except ParseException:
-            print "erro na penultima linha!"
+            print "Error on n-1 line"
     line = f.readline()
  
-print "==================\nINPUT\n=================="
+print "========\nINPUT\n========"
  
 for i in range(len(table)):
     print table[i]
  
-print "==================\nFIM INPUT\n=================="
+print "========\nFIM INPUT\n========"
  
 x_membros = (len(table[0]) - 1) / 2
 y_membros = (len(table) - 1) / 2
 
 X = [[Int("x_%s_%s" % (i + 1, j + 1)) for i in range(x_membros)]for j in range(y_membros)]
 
-#Regras
+#Rules
 
-# s� podem ser n�mero de 1 a 9
+#Can only be numbers from 1 to 9
 de_1_a_9  = [ And(1 <= X[j][i], X[j][i] <= x_membros*y_membros) for i in range(x_membros) for j in range(y_membros) ]
 
+#Cannot be x1 or /1(but can be 1x)
 div_mult_por_1 = []
 for i in range(len(table)):
     for j in range(len(table[i])):
@@ -87,6 +88,28 @@ for i in range(len(table)):
             else:
                 div_mult_por_1.append(Not(X[(i+1)/2][j/2] ==1))
 
+# All operations must be equal or greater than 0
+bigger_than_zero = []
+for i in range(len(table)):
+    for j in range(len(table[i])):
+        if (i%2==0):
+            if(table[i][j]=='/'):
+                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] / X[i/2][(j+1)/2] < 0))
+                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] / X[((i+1)/2)][(j+1)/2] < 0))
+            if(table[i][j]=='*'):
+                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] * X[i/2][(j+1)/2] < 0))
+                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] * X[((i+1)/2)][(j+1)/2] < 0))
+            if(table[i][j]=='+'):
+                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] + X[i/2][(j+1)/2] < 0))
+                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] + X[((i+1)/2)][(j+1)/2] < 0))
+            if(table[i][j]=='-'):
+                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] - X[i/2][(j+1)/2] < 0))
+                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] - X[((i+1)/2)][(j+1)/2] < 0))
+
+print "\n========Rule: Bigger than zero========\n"
+for i in range(len(bigger_than_zero)):
+    print bigger_than_zero[i]
+print "\n========End Rule========\n"
 
 x=0
 y=0
@@ -104,10 +127,7 @@ for i in range(0,len(table2)-1,2):
     x+=1
     y=0
 
-<<<<<<< HEAD
-print "Imprissao das equacoes horizontais"	
-=======
->>>>>>> 1a11ff264fe8a6a9e9ec0d7271c322e4cd1c1145
+# horizontal equations
 equacoes_horizontais=[]
 equacao_aux=""
 for i in range(0,len(table2)-1,2):
@@ -123,11 +143,7 @@ for i in range(0,len(table2)-1,2):
     equacoes_horizontais.append(eval(equacao_aux))
     equacao_aux=""
 
-<<<<<<< HEAD
-print "Imprissao das equacoes verticais"
-=======
-
->>>>>>> 1a11ff264fe8a6a9e9ec0d7271c322e4cd1c1145
+# vertical equations
 equacoes_verticais=[]
 equacao_aux=""
 for i in range(0,len(table2)-2,2):
@@ -143,29 +159,18 @@ for i in range(0,len(table2)-2,2):
     equacoes_verticais.append(eval(equacao_aux))
     equacao_aux=""
 
-#Cada n�mero � unico na matriz
+#Each number on matrix is unique
 num_unico = [ Distinct([X[j][i] for i in range(x_membros)  for j in range(y_membros)]) ]
 
-#como se faz a instancia ??? ver exemplo do A
+#Instance of the puzzle
 instancia = [ If(table[i*2][j*2] is '.',
                   True,
                   X[i][j] == table[i*2][j*2])
                for i in range(x_membros) for j in range(y_membros) ]
 
-solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes_verticais
+#all together
+solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes_verticais+bigger_than_zero
 
-<<<<<<< HEAD
-#como se faz a instancia ??? ver exemplo do A 
-instancia = [ If(table[i][j] == "."),
-                  True,
-                  X[i][j] == table[i][j])
-               for i in range(x_membros) for j in range(y_membros)]
-			   
-s=Solver()
-print "ate aqui tudo bem "
-
-s.add(solveMathemaGrid)
-=======
 s = Solver()
 
 s.add(solveMathemaGrid+instancia)
@@ -185,9 +190,8 @@ for i in equacoes_horizontais:
 
 for i in equacoes_verticais:
     print i
->>>>>>> 1a11ff264fe8a6a9e9ec0d7271c322e4cd1c1145
 
-print "\nSolucao:\n"
+print "\nSolution:\n"
 if s.check() == sat:
     m = s.model()
     r = [ [ m.evaluate(X[i][j]) for j in range(x_membros) ]
@@ -195,4 +199,4 @@ if s.check() == sat:
     for l in r:
         print l
 else:
-    print "\nimpossivel resolver\n"
+    print "\nImpossible!\n"
