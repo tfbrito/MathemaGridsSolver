@@ -17,9 +17,9 @@
 }
 
 \title{Solve MathemaGrids\\ Z3}
-\author{José Pereira \texttt{pg} 
-		\\ Marta Azevedo\texttt{pg}
-		              \\ Tiago Brito\texttt{pg}}
+\author{José Pereira \texttt{pg27748} 
+		\\ Marta Azevedo \texttt{pg27763}
+		              \\ Tiago Brito \texttt{pg}}
 		
 \begin{document}
 \maketitle
@@ -36,7 +36,7 @@ Neste relatório, pretendemos descrever de forma clara a nossa implementação.
 
 Para isso vamos usar como exemplo o seguinte tabuleiro:
 \begin{center}
-\includegraphics[scale=0.5]{exemplo_mathemagrids}
+\includegraphics[scale=0.4]{exemplo_mathemagrids}
 \end{center}
 
 Neste exemplo, já é dada uma {\it{hint}}, o $7$ que aparece na primeira linha, primeira coluna.
@@ -106,7 +106,7 @@ O do exemplo :
 \item Em nenhum ponto, os resultados intermédios do cálculo são valores infeiores a zero.
  \end{enumerate}
 
-As variaveis $x_membros$ e $y_membros$ representam a quantidade de espaços em que o jogador pode inserir números nas linhas e nas colunas respetivamente. As regras usadas são:
+As variaveis $x$\_$membros$ e $y$\_$membros$ representam a quantidade de espaços em que o jogador pode inserir números nas linhas e nas colunas respetivamente. As regras usadas são:
 
  \begin{enumerate}
  \item 
