@@ -93,15 +93,6 @@ bigger_than_zero = []
 for i in range(len(table)):
     for j in range(len(table[i])):
         if (i%2==0):
-            if(table[i][j]=='/'):
-                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] / X[i/2][(j+1)/2] < 0))
-                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] / X[((i+1)/2)][(j+1)/2] < 0))
-            if(table[i][j]=='*'):
-                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] * X[i/2][(j+1)/2] < 0))
-                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] * X[((i+1)/2)][(j+1)/2] < 0))
-            if(table[i][j]=='+'):
-                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] + X[i/2][(j+1)/2] < 0))
-                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] + X[((i+1)/2)][(j+1)/2] < 0))
             if(table[i][j]=='-'):
                 bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] - X[i/2][(j+1)/2] < 0))
                 bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] - X[((i+1)/2)][(j+1)/2] < 0))
