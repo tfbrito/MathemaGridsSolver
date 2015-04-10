@@ -13,6 +13,7 @@ sys.path
 
 from collections import Counter
 from pyparsing import Word, Literal, nums, Forward, ParseException
+from random import randrange
 from z3 import *
 
 from kivy.app import App
@@ -51,6 +52,8 @@ Builder.load_string('''
 '''
 )
 
+counter = 0
+
 class CLabel(ToggleButton):
     bgcolor = ListProperty([1,1,1])
 
@@ -63,12 +66,12 @@ def calculate_col_size(num_cols):
         size = size - 0.001
     return size
 
-counter = 0
 class DataGrid(GridLayout):
     childs = []
     obj = 0
     obj_text = "null"
     all_sel = False
+    count = 0
     def add_row(self, row_data, cols_size, instance, **kwargs):
         global counter
         self.rows += 1
@@ -129,7 +132,7 @@ class DataGrid(GridLayout):
                                         size_hint_x=cols_size, 
                                         size_hint_y=None,
                                         height=40,
-                                        id=("x_" + str(counter) + "_y_" + str(n)))
+                                        id=("x_" + str(counter) + "_" + str(n)))
             else:
                 cell = CLabel(text=('[color=000000]' + item + '[/color]'), 
                                         background_normal="background_normal.png",
@@ -197,6 +200,44 @@ class DataGrid(GridLayout):
         DataGrid.all_sel = False
         Window.unbind(on_key_down=DataGrid._on_keyboard_down)
 
+    def hint(self,instance, **kwargs):
+        childs = self.parent.children
+        
+        def check(childs,random_index_x,random_index_y,my_id):
+            done = False
+            print my_id
+            sol = str(solution[random_index_x][random_index_y])
+            for ch in childs:
+                for c in ch.children:
+                    if(str(c.id) == my_id):
+                        
+                        if(c.text[14:-8] != sol):
+                            c.state = "normal" 
+                            c.text = '[color=000000]' + sol + '[/color]'
+                            solution[random_index_x][random_index_y] = "OK"
+                            return True
+            return False
+
+        gotit = False
+        gotit2 = False
+        while(gotit == False):
+            if(DataGrid.count == x_membros * y_membros):
+                gotit = True
+                gotit2 = True
+            else:
+                while(gotit2 == False):
+                    print "ya"
+                    random_index_x = randrange(0,len(solution))
+                    random_index_y = randrange(0,len(solution[random_index_x]))
+                    if(str(solution[random_index_x][random_index_y]) != "OK"):
+                        gotit2 = True
+
+                my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
+                if(check(childs,random_index_x,random_index_y,my_id) == True):
+                    gotit = True
+                    DataGrid.count = DataGrid.count + 1
+        
+
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
             Window.unbind(on_key_down=DataGrid._on_keyboard_down)
             if(DataGrid.all_sel == True):
@@ -208,9 +249,17 @@ class DataGrid(GridLayout):
                                 c.text = '[color=000000][/color]'
                 DataGrid.all_sel = False
             elif(text):
-                if (text.isdigit()):                    
-                    DataGrid.obj.state = "normal"
-                    DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                if (text.isdigit()):         
+                    loc = list(DataGrid.obj.id[2:])
+                    x = int(loc[0])/2
+                    y = int(loc[2])/2
+                    if(raw_solution[x][y].as_string() == text):
+                        DataGrid.obj.state = "normal"
+                        DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                    else:
+                        DataGrid.obj.state = "normal"
+                        DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
+
             elif(keycode == 76): # Deleted pressed!
                 DataGrid.obj.state = "normal"
                 DataGrid.obj.text = '[color=000000][/color]'
@@ -414,35 +463,16 @@ for i in equacoes_verticais:
     print i
 
 print "\nSolution:\n"
+
 if s.check() == sat:
     m = s.model()
-    r = [ [ m.evaluate(X[i][j]) for j in range(x_membros) ]
+    raw_solution = [ [ m.evaluate(X[i][j]) for j in range(x_membros) ]
           for i in range(y_membros) ]
-    for l in r:
+    for l in raw_solution:
         print l
+    solution = [row[:] for row in raw_solution]
 else:
     print "\nImpossible!\n"
-
-
-#Input data (for testing!)
-data = [['.', '+', '.', '+','.','=','22'],
-        ['/', ',', '-', ',','*',',',','],
-        ['.', '*', '.', '*','.','=','24'],
-        ['*', ',', '+', ',','+',',',','],
-        ['.', '-', '.', '/','.','=','1'],
-        ['=', ',', '=', ',','=',',',','],
-        ['28', ',', '3', ',','42',',',',']]
-
-data2 = [['.', '-', '.', '*','.','/','.','=','50'],
-        ['/', ',', '-', ',','*',',',"*",',',','],
-        ['.', '-', '.', '*','.','/','.','=','10'],
-        ['/', ',', '-', ',','*',',',"*",',',','],
-        ['.', '-', '.', '*','.','/','.','=','40'],
-        ['/', ',', '-', ',','*',',',"*",',',','],
-        ['.', '-', '.', '*','.','/','.','=','40'],
-        ['=', ',', '=', ',','=',',','=',',',','],
-        ['16', ',', '14', ',','2',',','5',',',',']]
-#End Input data
 
 #Declaration of the grid object
 grid = DataGrid(raw_table)
@@ -455,11 +485,13 @@ scroll.do_scroll_x = False
 
 select_all_btn = Button(text="Sellect All", on_press=partial(grid.select_all))
 unselect_all_btn = Button(text="Unsellect All", on_press=partial(grid.unselect_all))
+hint_btn = Button(text="Hint", on_press=partial(grid.hint))
 
 
 btn_grid = BoxLayout(orientation="vertical")
 btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
+btn_grid.add_widget(hint_btn)
 
 root = BoxLayout(orientation="horizontal")
 
