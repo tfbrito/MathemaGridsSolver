@@ -1,19 +1,12 @@
 # -*- coding: UTF-8 -*-
 
 import sys
-import kivy
-import urllib2
-import json
-import pprint
-import functools
-import parser
 import copy
-kivy.require('1.7.1')
 sys.path
 
-from collections import Counter
 from pyparsing import Word, Literal, nums, Forward, ParseException
 from random import randrange
+from functools import partial
 from z3 import *
 
 from kivy.app import App
@@ -26,7 +19,6 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.listview import ListView
-from functools import partial
 from kivy.core.window import Window
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.modalview import ModalView
@@ -34,16 +26,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
 
 Builder.load_string('''
-# define how clabel looks and behaves
 <CLabel>:
-  canvas.before:
-    Color:
-      rgb: self.bgcolor
-    Rectangle:
-      size: self.size
-      pos: self.pos
-
-<HeaderLabel>:
   canvas.before:
     Color:
       rgb: self.bgcolor
@@ -70,7 +53,7 @@ def calculate_col_size(num_cols):
 class DataGrid(GridLayout):
     childs = []
     obj = 0
-    obj_text = "null"
+    obj_text = None
     all_sel = False
     count = 0
     solution = []
@@ -80,12 +63,11 @@ class DataGrid(GridLayout):
     def add_row(self, row_data, cols_size, instance, **kwargs):
         global counter
         self.rows += 1
-        ##########################################################
+
         def change_on_press(self):
             childs = self.parent.children
             for ch in childs:
                 if ch.id == self.id:
-                    print ch.id
                     row_n = 0
                     if len(ch.id) == 11:
                         row_n = ch.id[4:5]
@@ -111,7 +93,7 @@ class DataGrid(GridLayout):
             else:
                 self.state = "normal"
                 self.text = DataGrid.obj_text
-        ##########################################################
+
         n = 0
         for item in row_data:
             if(item == ','):
@@ -157,16 +139,17 @@ class DataGrid(GridLayout):
         counter += 1
         
     def select_all(self, instance, **kwargs):
+        info_lbl.text = '[color=008000]All selected[/color]'
         childs = self.parent.children
         DataGrid.childs = childs
         for ch in childs:
             for c in ch.children:
                 c.state = "down"
         DataGrid.all_sel = True
-        
         Window.bind(on_key_down=DataGrid._on_keyboard_down)
 
     def unselect_all(self, instance, **kwargs):
+        info_lbl.text = 'MathemaGrids puzzle'
         childs = self.parent.children
         for ch in childs:
             for c in ch.children:
@@ -177,6 +160,7 @@ class DataGrid(GridLayout):
 
     def hint(self,instance, **kwargs):
         if(DataGrid.hints):
+            info_lbl.text = 'MathemaGrids puzzle'
             childs = self.parent.children
 
             def check(childs,random_index_x,random_index_y,my_id):
@@ -184,19 +168,27 @@ class DataGrid(GridLayout):
                 sol = str(DataGrid.solution[random_index_x][random_index_y])
                 for ch in childs:
                     for c in ch.children:
-                        if(str(c.id) == my_id):
-                            
+                        if(str(c.id) == my_id and DataGrid.hints_all != True):
                             if(c.text[14:-8] != sol):
                                 c.state = "normal" 
                                 c.text = '[color=000000]' + sol + '[/color]'
                                 DataGrid.solution[random_index_x][random_index_y] = "OK"
                                 return True
+                        elif(str(c.id) == my_id and DataGrid.hints_all == True):
+                            if(c.text == '[color=000000][/color]'):
+                                c.state = "normal" 
+                                c.text = '[color=000000]' + sol + '[/color]'
+                                DataGrid.solution[random_index_x][random_index_y] = "OK"
+                                return True
+                            else: 
+                                return -1
                 return False
 
             gotit = False
             gotit2 = False
             while(gotit == False):
                 if(DataGrid.count >= x_membros * y_membros):
+                    info_lbl.text = '[color=008000]No more hints![/color]'
                     gotit = True
                     gotit2 = True
                 else:
@@ -208,16 +200,16 @@ class DataGrid(GridLayout):
                             gotit = True
 
                     my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
-                    if(check(childs,random_index_x,random_index_y,my_id) == True):
+                    res = check(childs,random_index_x,random_index_y,my_id)
+                    if(res == True):
                         gotit = True
                         DataGrid.count = DataGrid.count + 1
+                    elif(res == -1):
+                        gotit2 = False
+                        gotit = False
         else:
-            print "Hints disabled!"
-
-    def settings(self, instance, **kwargs):
-        print "show settings"
-        
-
+            info_lbl.text = '[color=FF0000]Hints are disabled!\nEnable them on the settings panel.[/color]'
+            
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
             Window.unbind(on_key_down=DataGrid._on_keyboard_down)
             if(DataGrid.all_sel == True):
@@ -235,7 +227,6 @@ class DataGrid(GridLayout):
                     loc = list(DataGrid.obj.id[2:])
                     x = int(loc[0])/2
                     y = int(loc[2])/2
-                    print DataGrid.validate
                     if(DataGrid.validate == True):
                         if(raw_solution[x][y].as_string() == text):
                             DataGrid.obj.state = "normal"
@@ -466,6 +457,7 @@ checkbox1 = DataGrid.validate
 checkbox2 = DataGrid.hints
 checkbox3 = DataGrid.hints_all
 def settings_panel(self):
+    info_lbl.text = 'MathemaGrids puzzle'
     global checkbox1
     global checkbox2
     global checkbox3
@@ -535,12 +527,14 @@ unselect_all_btn = Button(text="Unsellect All", on_press=partial(grid.unselect_a
 hint_btn = Button(text="Hint", on_press=partial(grid.hint))
 settings_btn = Button(text="Settings", on_press=settings_panel)
 
+info_lbl = Label(text='MathemaGrids puzzle', id="lbl_info", markup=True)
 
 btn_grid = BoxLayout(orientation="vertical")
 btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
 btn_grid.add_widget(hint_btn)
 btn_grid.add_widget(settings_btn)
+btn_grid.add_widget(info_lbl)
 
 root = BoxLayout(orientation="horizontal")
 
