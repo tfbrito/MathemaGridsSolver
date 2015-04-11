@@ -1,193 +1,155 @@
 # -*- coding: UTF-8 -*-
+from z3 import Int, And, Not, Distinct, If, Solver, sat
 
-import sys
-from collections import Counter
-from pyparsing import Word, Literal, nums, Forward, ParseException
+import parsing
+import generate_board
 
-import parser
-sys.path
- 
-from z3 import *
 
-import copy
- 
-integer = Word(nums)  # simple unsigned integer
-arithOp = Word("+-*/", max=1)  # arithmetic operators
-equal = Literal("=")
- 
-identifier2 = integer | "." | ","
-oddLine = Forward()
-oddLine << ((identifier2 + arithOp + oddLine) | identifier2 + "=" + integer)
- 
-evenLine = Forward()
-evenLine << ((arithOp + "," + evenLine) | arithOp)
- 
-finalLine = Forward()
-finalLine << ((equal + "," + finalLine) | equal)
- 
-lastLine = Forward()
-lastLine << ((integer + "," + lastLine) | integer)
- 
-print "\n Solving MathemaGrids \n"
- 
-if len(sys.argv) < 2:
-    print "Missing input file"
-    print "example: solveMathemaGrids.py <input file>"
-    sys.exit()
- 
-filename = sys.argv[1]
- 
-f = open(filename, "r")
- 
-line = f.readline()
-i = 0
-table = []
-while (line != ""):
-    try:
-        if (i % 2 == 0):  # it's an oddLine
-            table = table + [oddLine.parseString(line)]
-        else:  # it's an evenLine
-            table = table + [evenLine.parseString(line)]
-        i = i + 1
-    except ParseException:
-        try:  # it's the n-1 line
-            table = table + [finalLine.parseString(line)]
-            try:  # it's the last line
-                line = f.readline()
-                table = table + [lastLine.parseString(line)]
-            except ParseException:
-                print "Error on last line"
-        except ParseException:
-            print "Error on n-1 line"
-    line = f.readline()
- 
-print "========\nINPUT\n========"
- 
-for i in range(len(table)):
-    print table[i]
- 
-print "========\nFIM INPUT\n========"
- 
-x_membros = (len(table[0]) - 1) / 2
-y_membros = (len(table) - 1) / 2
 
-X = [[Int("x_%s_%s" % (i + 1, j + 1)) for i in range(x_membros)]for j in range(y_membros)]
 
-#Rules
 
-#Can only be numbers from 1 to 9
-de_1_a_9  = [ And(1 <= X[j][i], X[j][i] <= x_membros*y_membros) for i in range(x_membros) for j in range(y_membros) ]
+def solve(board):
+    size = (len(board[0]) - 1) / 2
 
-#Cannot be x1 or /1(but can be 1x)
-div_mult_por_1 = []
-for i in range(len(table)):
-    for j in range(len(table[i])):
-        if (table[i][j]=='/' or table[i][j]=='*' ):
-            if (i%2==0):
-                div_mult_por_1.append(Not(X[i/2][(j+1)/2] == 1))
+    x = [[Int("x_%s_%s" % (i + 1, j + 1)) for i in range(size)] for j in range(size)]
+
+    # Rules
+
+    # Can only be numbers from 1 to 9
+    max_size = [And(1 <= x[j][i], x[j][i] <= size * size) for i in range(size) for j in range(size)]
+
+    # Cannot be x1 or /1(but can be 1x)
+    not_one_exceptions = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if str(board[i][j]) == "/" or str(board[i][j]) == "*":
+                if i % 2 == 0:
+                    not_one_exceptions.append(Not(x[i/2][(j+1)/2] == 1))
+                else:
+                    not_one_exceptions.append(Not(x[(i+1)/2][j/2] == 1))
+
+    # All operations must be equal or greater than 0
+    bigger_than_zero = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if i % 2 == 0:
+                if board[i][j] == '-':
+                    if j == 1:
+                        bigger_than_zero.append(Not(x[i/2][(j-1)/2] - x[i/2][(j+1)/2] < 0))
+                    else:
+                        equation = ""
+                        for n in range(j):
+                            if n > 2 and str(board[i][n]) != "." and not(board[i][n].isdigit()):
+                                equation = "("+equation+")"+str(board[i][n])
+                            else:
+                                if board[i][n] == "." or board[i][n].isdigit():
+                                    equation += "x["+str(i/2)+"]["+str(n/2)+"]"
+                                else:
+                                    equation += board[i][n]
+                        equation = equation + "-" + "x[" + str(i/2) + "][" + str((j+1)/2)+"]" + ">0"
+                        bigger_than_zero.append(eval(equation))
             else:
-                div_mult_por_1.append(Not(X[(i+1)/2][j/2] ==1))
+                if board[i][j] == '-':
+                    if i == 1:
+                        bigger_than_zero.append(Not(x[(i-1)/2][j/2] - x[(i+1)/2][j/2] < 0))
+                    else:
+                        equation = ""
+                        for n in range(i):
+                            if n > 2 and board[n][j] != "." and not(board[n][j].isdigit()):
+                                equation = "("+equation+")"+str(board[n][j])
+                            else:
+                                if board[n][j] == "." or board[n][j].isdigit():
+                                    equation += "x["+str(n/2)+"]["+str(j/2)+"]"
+                                else:
+                                    equation += str(board[n][j])
+                        equation = equation + "-" + "x[" + str((i+1)/2) + "][" + str(j/2)+"]" + ">0"
+                        bigger_than_zero.append(eval(equation))
 
-# All operations must be equal or greater than 0
-bigger_than_zero = []
-for i in range(len(table)):
-    for j in range(len(table[i])):
-        if (i%2==0):
-            if(table[i][j]=='-'):
-                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] - X[i/2][(j+1)/2] < 0))
-                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] - X[((i+1)/2)][(j+1)/2] < 0))
+    x1 = 0
+    y1 = 0
+    board2 = []
 
-print "\n========Rule: Bigger than zero========\n"
-for i in range(len(bigger_than_zero)):
-    print bigger_than_zero[i]
-print "\n========End Rule========\n"
+    for i in range(len(board)):
+        board2.append([])
+        for j in range(len(board[i])):
+            board2[i].append(board[i][j])
 
-x=0
-y=0
-table2=[]
+    for i in range(0, len(board2) - 1, 2):
+        for j in range(0, len(board2[i]) - 1, 2):
+            board2[i][j] = x[x1][y1]
+            y1 += 1
+        x1 += 1
+        y1 = 0
 
-for i in range(len(table)):
-    table2.append([])
-    for j in range(len(table[i])):
-        table2[i].append(table[i][j])
-
-for i in range(0,len(table2)-1,2):
-    for j in range(0,len(table2[i])-1,2):
-        table2[i][j]=X[x][y]
-        y+=1
-    x+=1
-    y=0
-
-# horizontal equations
-equacoes_horizontais=[]
-equacao_aux=""
-for i in range(0,len(table2)-1,2):
-    for j in range(len(table2[i])):
-        if(j!=0 and j%3==0 and j!=len(table2[i])-1):
-            equacao_aux="("+equacao_aux+")"+str(table2[i][j])
-        else:
-            if(table2[i][j]=='.'):
-                equacao_aux += "X["+str(i/2)+"]["+str(j/2)+"]"
+    # horizontal equations
+    horizontal_equations=[]
+    equation = ""
+    for i in range(0, len(board2)-1, 2):
+        for j in range(len(board2[i])):
+            if j > 2 and board[i][j] != "." and not(board[i][j].isdigit()) and j != len(board2[i])-1:
+                equation = "("+equation+")"+str(board2[i][j])
             else:
-                equacao_aux += str(table2[i][j])
-    equacao_aux=equacao_aux.replace("=", "==")
-    equacoes_horizontais.append(eval(equacao_aux))
-    equacao_aux=""
+                if board2[i][j] == '.':
+                    equation += "x["+str(i/2)+"]["+str(j/2)+"]"
+                else:
+                    equation += str(board2[i][j])
+        equation = equation.replace("=", "==")
+        horizontal_equations.append(eval(equation))
+        equation = ""
 
-# vertical equations
-equacoes_verticais=[]
-equacao_aux=""
-for i in range(0,len(table2)-2,2):
-    for j in range(len(table2[i])):
-        if(j!=0 and j%3==0 and j!=len(table2[i])-1):
-            equacao_aux="("+equacao_aux+")"+str(table2[j][i])
-        else:
-            if(table2[j][i]=='.'):
-                equacao_aux += "X["+str(j/2)+"]["+str(i/2)+"]"
+    # vertical equations
+    vertical_equations = []
+    equation = ""
+    for i in range(0,len(board2)-2,2):
+        for j in range(len(board2[i])):
+            if j > 2 and board[i][j] != "." and not(board[i][j].isdigit()) and j != len(board2[i])-1:
+                equation = "("+equation+")"+str(board2[j][i])
             else:
-                equacao_aux += str(table2[j][i])
-    equacao_aux=equacao_aux.replace("=", "==")
-    equacoes_verticais.append(eval(equacao_aux))
-    equacao_aux=""
+                if board2[j][i] == '.':
+                    equation += "x["+str(j/2)+"]["+str(i/2)+"]"
+                else:
+                    equation += str(board2[j][i])
+        equation = equation.replace("=", "==")
+        vertical_equations.append(eval(equation))
+        equation = ""
 
-#Each number on matrix is unique
-num_unico = [ Distinct([X[j][i] for i in range(x_membros)  for j in range(y_membros)]) ]
+    # Each number on matrix is unique
+    unique = [Distinct([x[j][i] for i in range(size) for j in range(size)])]
 
-#Instance of the puzzle
-instancia = [ If(table[i*2][j*2] is '.',
-                  True,
-                  X[i][j] == table[i*2][j*2])
-               for i in range(x_membros) for j in range(y_membros) ]
+    # Instance of the puzzle
+    instance = [If(board[i*2][j*2] is ".",
+                    True,
+                    x[i][j] == board[i*2][j*2]) for i in range(size) for j in range(size)]
 
-#all together
-solveMathemaGrid=de_1_a_9+num_unico+div_mult_por_1+equacoes_horizontais+equacoes_verticais+bigger_than_zero
+    # All together
+    rules = instance+max_size + unique + not_one_exceptions + horizontal_equations + vertical_equations + bigger_than_zero + not_one_exceptions
+    s = Solver()
 
-s = Solver()
+    for i in bigger_than_zero:
+        print i
+    s.add(rules)
 
-s.add(solveMathemaGrid+instancia)
+    if s.check() == sat:
+        for i in board:
+            print i
+        print "\nSolution:\n"
+        m = s.model()
+        r = [[m.evaluate(x[i][j]) for j in range(size)]
+             for i in range(size)]
+        for l in r:
+            print l
+        return 1
+    else:
+        print "Impossible!"
+        return 0
 
-print "\nConstraints\n"
-for i in de_1_a_9:
+
+loaded_board = parsing.read_board("examples\example_1.txt")
+solve(loaded_board)
+
+generated_board, solution = generate_board.generate(3, 2)
+for i in generated_board:
     print i
+solve(generated_board)
+parsing.save_board(generated_board, "test")
 
-for i in num_unico:
-    print i
-
-for i in div_mult_por_1:
-    print i
-
-for i in equacoes_horizontais:
-    print i
-
-for i in equacoes_verticais:
-    print i
-
-print "\nSolution:\n"
-if s.check() == sat:
-    m = s.model()
-    r = [ [ m.evaluate(X[i][j]) for j in range(x_membros) ]
-          for i in range(y_membros) ]
-    for l in r:
-        print l
-else:
-    print "\nImpossible!\n"
