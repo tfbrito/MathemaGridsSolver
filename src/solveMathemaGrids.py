@@ -31,6 +31,7 @@ from kivy.core.window import Window
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.modalview import ModalView
 from kivy.uix.textinput import TextInput
+from kivy.uix.checkbox import CheckBox
 
 Builder.load_string('''
 # define how clabel looks and behaves
@@ -73,6 +74,9 @@ class DataGrid(GridLayout):
     all_sel = False
     count = 0
     solution = []
+    validate = False
+    hints = False
+    hints_all = False
     def add_row(self, row_data, cols_size, instance, **kwargs):
         global counter
         self.rows += 1
@@ -172,41 +176,46 @@ class DataGrid(GridLayout):
         Window.unbind(on_key_down=DataGrid._on_keyboard_down)
 
     def hint(self,instance, **kwargs):
-        childs = self.parent.children
+        if(DataGrid.hints):
+            childs = self.parent.children
 
-        
-        def check(childs,random_index_x,random_index_y,my_id):
-            done = False
-            sol = str(DataGrid.solution[random_index_x][random_index_y])
-            for ch in childs:
-                for c in ch.children:
-                    if(str(c.id) == my_id):
-                        
-                        if(c.text[14:-8] != sol):
-                            c.state = "normal" 
-                            c.text = '[color=000000]' + sol + '[/color]'
-                            DataGrid.solution[random_index_x][random_index_y] = "OK"
-                            return True
-            return False
+            def check(childs,random_index_x,random_index_y,my_id):
+                done = False
+                sol = str(DataGrid.solution[random_index_x][random_index_y])
+                for ch in childs:
+                    for c in ch.children:
+                        if(str(c.id) == my_id):
+                            
+                            if(c.text[14:-8] != sol):
+                                c.state = "normal" 
+                                c.text = '[color=000000]' + sol + '[/color]'
+                                DataGrid.solution[random_index_x][random_index_y] = "OK"
+                                return True
+                return False
 
-        gotit = False
-        gotit2 = False
-        while(gotit == False):
-            if(DataGrid.count >= x_membros * y_membros):
-                gotit = True
-                gotit2 = True
-            else:
-                while(gotit2 == False):
-                    random_index_x = randrange(0,len(DataGrid.solution))
-                    random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
-                    if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
-                        gotit2 = True
-                        gotit = True
-
-                my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
-                if(check(childs,random_index_x,random_index_y,my_id) == True):
+            gotit = False
+            gotit2 = False
+            while(gotit == False):
+                if(DataGrid.count >= x_membros * y_membros):
                     gotit = True
-                    DataGrid.count = DataGrid.count + 1
+                    gotit2 = True
+                else:
+                    while(gotit2 == False):
+                        random_index_x = randrange(0,len(DataGrid.solution))
+                        random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
+                        if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
+                            gotit2 = True
+                            gotit = True
+
+                    my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
+                    if(check(childs,random_index_x,random_index_y,my_id) == True):
+                        gotit = True
+                        DataGrid.count = DataGrid.count + 1
+        else:
+            print "Hints disabled!"
+
+    def settings(self, instance, **kwargs):
+        print "show settings"
         
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
@@ -226,13 +235,18 @@ class DataGrid(GridLayout):
                     loc = list(DataGrid.obj.id[2:])
                     x = int(loc[0])/2
                     y = int(loc[2])/2
-                    if(raw_solution[x][y].as_string() == text):
-                        DataGrid.obj.state = "normal"
-                        DataGrid.obj.text = '[color=000000]' + text + '[/color]'
-                        DataGrid.solution[x][y] = "OK"
+                    print DataGrid.validate
+                    if(DataGrid.validate == True):
+                        if(raw_solution[x][y].as_string() == text):
+                            DataGrid.obj.state = "normal"
+                            DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                            DataGrid.solution[x][y] = "OK"
+                        else:
+                            DataGrid.obj.state = "normal"
+                            DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
                     else:
                         DataGrid.obj.state = "normal"
-                        DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
+                        DataGrid.obj.text = '[color=000000]' + text + '[/color]'
 
             elif(keycode == 76 and DataGrid.obj.state == "down"): # Deleted pressed!
                 DataGrid.obj.state = "normal"
@@ -250,8 +264,6 @@ class DataGrid(GridLayout):
 
         for row in range(len(body_data)):
             self.add_row(body_data[row], calculate_col_size(len(body_data)),self)
-
-
 
 #############################################
 
@@ -448,6 +460,67 @@ if s.check() == sat:
 else:
     print "\nImpossible!\n"
 
+
+###
+checkbox1 = DataGrid.validate
+checkbox2 = DataGrid.hints
+checkbox3 = DataGrid.hints_all
+def settings_panel(self):
+    global checkbox1
+    global checkbox2
+    global checkbox3
+
+    def on_checkbox_active(checkbox, value):        
+        if(checkbox.id == "ck_validate"):
+            global checkbox1
+            checkbox1 = value
+        elif(checkbox.id == "ck_hints"):
+            global checkbox2
+            checkbox2 = value
+        elif(checkbox.id == "ck_hints_all"):
+            global checkbox3
+            checkbox3 = value        
+
+    def save_settings(self):
+        DataGrid.validate = checkbox1
+        DataGrid.hints = checkbox2
+        DataGrid.hints_all = checkbox3
+
+    label1 = Label(text='Validar jogadas ao introduzir', id="lbl_validate")
+    label2 = Label(text='Activar hints', id="lbl_hints")
+    label3 = Label(text='Hints preenchem apenas campos vazios', id="lbl_hints_all")
+    check1 = CheckBox(id="ck_validate",active=DataGrid.validate)
+    check2 = CheckBox(id="ck_hints",active=DataGrid.hints)
+    check3 = CheckBox(id="ck_hints_all",active=DataGrid.hints_all)
+    check1.bind(active=on_checkbox_active)
+    check2.bind(active=on_checkbox_active)
+    check3.bind(active=on_checkbox_active)
+
+    settings_grid = GridLayout(cols=2)
+    settings_grid.add_widget(label1)
+    settings_grid.add_widget(check1)
+    settings_grid.add_widget(label2)
+    settings_grid.add_widget(check2)
+    settings_grid.add_widget(label3)
+    settings_grid.add_widget(check3)
+    
+    view = ModalView(auto_dismiss=False)
+    
+    cancel_btn = Button(text='Cancel')
+    save_btn = Button(text="Save", on_press=save_settings) 
+    cancel_btn.bind(on_press=view.dismiss)
+    save_btn.bind(on_release=view.dismiss)
+
+    modal_layout = BoxLayout(orientation="vertical")
+    modal_layout.add_widget(settings_grid)
+    modal_layout.add_widget(save_btn)
+    modal_layout.add_widget(cancel_btn)
+
+    view.add_widget(modal_layout)
+    view.open()
+
+############################
+
 #Declaration of the grid object
 grid = DataGrid(raw_table)
 grid.rows = len(raw_table)
@@ -460,12 +533,14 @@ scroll.do_scroll_x = False
 select_all_btn = Button(text="Sellect All", on_press=partial(grid.select_all))
 unselect_all_btn = Button(text="Unsellect All", on_press=partial(grid.unselect_all))
 hint_btn = Button(text="Hint", on_press=partial(grid.hint))
+settings_btn = Button(text="Settings", on_press=settings_panel)
 
 
 btn_grid = BoxLayout(orientation="vertical")
 btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
 btn_grid.add_widget(hint_btn)
+btn_grid.add_widget(settings_btn)
 
 root = BoxLayout(orientation="horizontal")
 
