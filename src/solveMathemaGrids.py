@@ -72,6 +72,7 @@ class DataGrid(GridLayout):
     obj_text = "null"
     all_sel = False
     count = 0
+    solution = []
     def add_row(self, row_data, cols_size, instance, **kwargs):
         global counter
         self.rows += 1
@@ -151,36 +152,6 @@ class DataGrid(GridLayout):
             n+=1
         counter += 1
         
-    def remove_row(self, n_cols, instance, **kwargs):
-        childs = self.parent.children
-        selected = 0
-        for ch in childs:
-            for c in reversed(ch.children):
-                if c.id != "Header_Label":
-                    if c.state == "down":
-                        self.remove_widget(c)
-                        print str(c.id) + '   -   ' + str(c.state)
-                        selected += 1
-        if selected == 0:
-            for ch in childs:
-                count_01 = n_cols
-                count_02 = 0
-                count = 0
-                while (count < n_cols):
-                    if n_cols != len(ch.children):
-                        for c in ch.children:
-                            if c.id != "Header_Label":
-                                print "Length: " + str(len(ch.children))
-                                print "N_cols: " + str(n_cols + 1)
-                        
-                                self.remove_widget(c)
-                                count += 1
-                                break
-                            else:
-                                break
-                    else:
-                        break
-
     def select_all(self, instance, **kwargs):
         childs = self.parent.children
         DataGrid.childs = childs
@@ -202,11 +173,11 @@ class DataGrid(GridLayout):
 
     def hint(self,instance, **kwargs):
         childs = self.parent.children
+
         
         def check(childs,random_index_x,random_index_y,my_id):
             done = False
-            print my_id
-            sol = str(solution[random_index_x][random_index_y])
+            sol = str(DataGrid.solution[random_index_x][random_index_y])
             for ch in childs:
                 for c in ch.children:
                     if(str(c.id) == my_id):
@@ -214,23 +185,23 @@ class DataGrid(GridLayout):
                         if(c.text[14:-8] != sol):
                             c.state = "normal" 
                             c.text = '[color=000000]' + sol + '[/color]'
-                            solution[random_index_x][random_index_y] = "OK"
+                            DataGrid.solution[random_index_x][random_index_y] = "OK"
                             return True
             return False
 
         gotit = False
         gotit2 = False
         while(gotit == False):
-            if(DataGrid.count == x_membros * y_membros):
+            if(DataGrid.count >= x_membros * y_membros):
                 gotit = True
                 gotit2 = True
             else:
                 while(gotit2 == False):
-                    print "ya"
-                    random_index_x = randrange(0,len(solution))
-                    random_index_y = randrange(0,len(solution[random_index_x]))
-                    if(str(solution[random_index_x][random_index_y]) != "OK"):
+                    random_index_x = randrange(0,len(DataGrid.solution))
+                    random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
+                    if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
                         gotit2 = True
+                        gotit = True
 
                 my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
                 if(check(childs,random_index_x,random_index_y,my_id) == True):
@@ -248,7 +219,9 @@ class DataGrid(GridLayout):
                                 c.state = "normal"
                                 c.text = '[color=000000][/color]'
                 DataGrid.all_sel = False
-            elif(text):
+                DataGrid.solution = [row[:] for row in raw_solution]
+                DataGrid.count = 0
+            elif(text and DataGrid.obj.state == "down"):
                 if (text.isdigit()):         
                     loc = list(DataGrid.obj.id[2:])
                     x = int(loc[0])/2
@@ -256,11 +229,12 @@ class DataGrid(GridLayout):
                     if(raw_solution[x][y].as_string() == text):
                         DataGrid.obj.state = "normal"
                         DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                        DataGrid.solution[x][y] = "OK"
                     else:
                         DataGrid.obj.state = "normal"
                         DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
 
-            elif(keycode == 76): # Deleted pressed!
+            elif(keycode == 76 and DataGrid.obj.state == "down"): # Deleted pressed!
                 DataGrid.obj.state = "normal"
                 DataGrid.obj.text = '[color=000000][/color]'
 
@@ -470,7 +444,7 @@ if s.check() == sat:
           for i in range(y_membros) ]
     for l in raw_solution:
         print l
-    solution = [row[:] for row in raw_solution]
+    DataGrid.solution = [row[:] for row in raw_solution]
 else:
     print "\nImpossible!\n"
 
