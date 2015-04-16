@@ -1,6 +1,7 @@
 # -*- coding: UTF-8 -*-
 import parsing
 import generate_board
+import os
 
 from functools import partial
 from random import randrange
@@ -21,6 +22,7 @@ from kivy.uix.scrollview import ScrollView
 from kivy.uix.modalview import ModalView
 from kivy.uix.textinput import TextInput
 from kivy.uix.checkbox import CheckBox
+from kivy.uix.filechooser import FileChooserListView
 
 Builder.load_string('''
 <CLabel>:
@@ -105,6 +107,46 @@ class DataGrid(GridLayout):
     validate = False
     hints = False
     hints_all = False
+
+    def load_from_filechooser(self, filechooser, path):
+        f = open(filechooser.selection[0], "r")
+        lines = f.readlines()
+        f.close()
+        
+        print lines
+
+
+    def open(self, instance, **kwargs):
+        view = ModalView(auto_dismiss=False)
+
+        filechooser = ""
+        chooser_grid = BoxLayout()
+        fileChooser = FileChooserListView(id=filechooser,path="/home/")
+
+        buttons = BoxLayout(height=30,size_hint_y=None)
+
+        cancel_btn = Button(text='Cancel')
+        open2_btn = Button(text="Open") 
+
+
+        cancel_btn.bind(on_press=view.dismiss)
+        open2_btn.bind(on_release=partial(self.load_from_filechooser, fileChooser))
+        
+
+        modal_layout = BoxLayout(orientation="vertical")
+        modal_layout.add_widget(chooser_grid)
+        modal_layout2 = BoxLayout(orientation="horizontal",size_hint_y=None)
+        modal_layout2.add_widget(open2_btn)
+        modal_layout2.add_widget(cancel_btn)
+
+        modal_layout.add_widget(modal_layout2)
+
+
+        chooser_grid.add_widget(fileChooser)
+
+        view.add_widget(modal_layout)
+        view.open()
+
     def add_row(self, row_data, cols_size, instance, **kwargs):
         global counter
         self.rows += 1
@@ -402,6 +444,7 @@ scroll.add_widget(grid)
 scroll.do_scroll_y = True
 scroll.do_scroll_x = False
 
+open_btn = Button(text="Open puzzle", on_press=partial(grid.open))
 generate_btn = Button(text="Generate puzzle", on_press=partial(grid.generate))
 select_all_btn = Button(text="Sellect All", on_press=partial(grid.select_all))
 unselect_all_btn = Button(text="Unsellect All", on_press=partial(grid.unselect_all))
@@ -411,6 +454,7 @@ settings_btn = Button(text="Settings", on_press=settings_panel)
 info_lbl = Label(text='MathemaGrids puzzle', id="lbl_info", markup=True)
 
 btn_grid = BoxLayout(orientation="vertical")
+btn_grid.add_widget(open_btn)
 btn_grid.add_widget(generate_btn)
 btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
