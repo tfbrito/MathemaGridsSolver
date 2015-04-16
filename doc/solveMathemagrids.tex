@@ -19,7 +19,7 @@
 \title{Solve MathemaGrids\\ Z3}
 \author{José Pereira \texttt{pg27748} 
 		\\ Marta Azevedo \texttt{pg27763}
-		              \\ Tiago Brito \texttt{pg}}
+		              \\ Tiago Brito \texttt{pg27724}}
 		
 \begin{document}
 \maketitle
@@ -53,14 +53,14 @@ Como linguagem de interface com o {\sc{z3}} preferimos usar o {\sc{python}} {\sc
 \paragraph{} 
 O $solveMathemaGrids.py$ é invocado como um ficheiro python qualquer:
 \begin{verbatim}
- $ solveSurvo.py <ficheiro\_input>
+ $ python solveSurvo.py <ficheiro\_input>
 \end{verbatim}
 por exemplo,
 \begin{verbatim}
- $ solveSurvo.py exemplo_1.txt
+ $ python solveSurvo.py exemplo_1.txt
 \end{verbatim}
 
-Caso consiga resolver o puzzle, é imprimido no ecra o output, ou seja, o puzzle completo com os as soluções. É necessário que o {\sc{z3}} esteja instalado e conectado com o {\sc{python}}.
+É necessário que o {\sc{z3}} esteja instalado e conectado com o {\sc{python}}.
 
 \subsection{Ficheiros input}
 
@@ -84,17 +84,17 @@ Os $"."$ representam os espaços que têm que ser preenchidos com números e as 
 
 Também estão representadas as operações sendo o {\bf{*}} a multiplicação, o  {\bf{+}} a soma, {\bf{-}} a subtração e {\bf{/}} a divisão. 
 
-\subsection{Ficheiros output}
-\paragraph{} 
-O {\sc{MathemaGrids}} dá como output um ficheiro com a representação da matriz obtida e os valores que as linhas e as colunas que respeitam as operações dadas como imput.
+%\subsection{Ficheiros output}
+%\paragraph{} 
+%O {\sc{MathemaGrids}} dá como output um ficheiro com a representação da matriz obtida e os %valores que as linhas e as colunas que respeitam as operações dadas como imput.
 
 
-O do exemplo :
-\begin{center}
+%O do exemplo :
+%\begin{center}
 %\begin{verbatim}
-{\bf{------> falta o output}}
+%{\bf{------> falta o output}}
 %\end{verbatim}
-\end{center}
+%\end{center}
 
 \subsection{Codificação do {\sc{MathemaGrids}}}
 \paragraph{} Para codificar o puzzle,usamos as seguintes propriedades (descritas em {\url{https://www.brainbashers.com/mathemagrids.asp}}):
@@ -110,48 +110,123 @@ As variaveis $x$\_$membros$ e $y$\_$membros$ representam a quantidade de espaço
 
  \begin{enumerate}
  \item 
-
 \begin{verbatim}
-[ And(1 <= X[j][i], X[j][i] <= x_membros*y_membros)
- for i in range(x_membros) for j in range(y_membros) ]
+max_size = [And(1 <= x[j][i], x[j][i] <= size * size) 
+for i in range(size) for j in range(size)]
 \end{verbatim}
- \item
+
+ \item \small{(No ficheiro generate$\_$board.py)}
 
 \begin{verbatim}
-[ Distinct([X[j][i] for i in range(x_membros)  
-for j in range(y_membros)]) ]
+unique = [Distinct([x[j][i] for i in range(size) for j in range(size)])]
 \end{verbatim}
 
  \item Para garantir que as operações são feitas na ordem correta, escrevemos as equações horizontais e verticais que, neste exemplo são : \\
-{\bf{------> faltam aqui as equações}}
-\item 
-
+\begin{itemize}
+\item {\bf{Equações Verticais:}}
 \begin{verbatim}
-div_mult_por_1 = []
-for i in range(len(table)):
-    for j in range(len(table[i])):
-        if (table[i][j]=='/' or table[i][j]=='*' ):
-            if (i%2==0):
-                div_mult_por_1.append(Not(X[i/2][(j+1)/2] == 1))
-            else:
-                div_mult_por_1.append(Not(X[(i+1)/2][j/2] ==1))
+(7 * x_1_2) - x_1_3 = 55
+(x_2_1 + x_2_2) * x_2_3 = 72
+(x_3_1 * x_3_2) - x_3_3 = 6
 \end{verbatim}
+\item {\bf{Equações Horizontais:}}
+\begin{verbatim}
+(7 * x_2_1) - x_3_1 = 38
+(x_1_2 - x_2_2) - x_3_2 =1
+(x_1_3 * x_2_3) * x_3_3 = 27
+\end{verbatim}
+\end{itemize}
 
-\item Como a operação critica para isto acontecer é apenas a subtração: 
+\item 
+\small{
+\begin{verbatim}
+    not_one_exceptions = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if str(board[i][j]) == "/" or str(board[i][j]) == "*":
+                if i % 2 == 0:
+                    not_one_exceptions.append(Not(x[i/2][(j+1)/2] == 1))
+                else:
+                    not_one_exceptions.append(Not(x[(i+1)/2][j/2] == 1))
+\end{verbatim}
+}
+\newpage
+
+\item Como a operação crítica para isto acontecer é apenas a subtração: 
 
 \begin{verbatim}
 bigger_than_zero = []
-for i in range(len(table)):
-    for j in range(len(table[i])):
-        if (i%2==0):
-            if(table[i][j]=='-'):
-                bigger_than_zero.append(Not(X[i/2][((j+1)/2)-1] 
-                - X[i/2][(j+1)/2] < 0))
-                bigger_than_zero.append(Not(X[((i+1)/2-1)][j/2] 
-                - X[((i+1)/2)][(j+1)/2] < 0))
+for i in range(len(board)):
+ for j in range(len(board[i])):
+     if i % 2 == 0:
+         if board[i][j] == '-':
+             if j == 1:
+                 bigger_than_zero.append(Not(x[i/2][(j-1)/2] - x[i/2][(j+1)/2] < 0))
+             else:
+                 equation = ""
+                 for n in range(j):
+                     if n > 2 and str(board[i][n]) != "." and not(board[i][n].isdigit()):
+                         equation = "("+equation+")"+str(board[i][n])
+                     else:
+                         if board[i][n] == "." or board[i][n].isdigit():
+                             equation += "x["+str(i/2)+"]["+str(n/2)+"]"
+                         else:
+                             equation += board[i][n]
+                 equation = equation + "-" + "x[" + str(i/2) + "][" + str((j+1)/2)+"]" + ">0"
+                 bigger_than_zero.append(eval(equation))
 \end{verbatim}
 
+\item Esta regra serve para garantir que o y em $x/y$ é um multiplo do $x$. Caso contrário, por exemplo $6/2=3=7/2$
+\begin{verbatim}
+ multiple = []
+    for i in range(len(board)):
+        for j in range(len(board[i])):
+            if i % 2 == 0:
+                if board[i][j] == '/':
+                    multiple.append(x[i/2][(j-1)/2] % x[i/2][(j+1)/2] == 0)
+            else:
+                if board[i][j] == '/':
+                    multiple.append(x[(i-1)/2][j/2] % x[(i+1)/2][j/2] == 0)
+\end{verbatim}
 
  \end{enumerate}
+
+No final, é enviado para o solver:
+\begin{verbatim}
+ rules = unique+bigger_than_zero+not_one_exceptions+max_size+multiple
+\end{verbatim}
+
+\section{{\it{generate$\_$board.py}}}
+\subsection{Hints}
+
+As hints foram adicionadas ao nosso projeto com o objetivo de ajudar o jogador a chegar mais rapidamente à solução. Como tal, na opção ``{\it{Settings}}'' podemos selecionar duas opções relativamente a este assunto:
+\begin{enumerate}
+\item Ativar hints
+\item Hints preenchem apenas campos vazios
+\end{enumerate}
+
+Se a {\bf{opção 1}} estiver ativada, quando clicarmos em ``{\it{Hint}}'' no menu inicial é sugerido um número para um espaço (mesmo que este já tenha sido preenchido pelo utilizador).
+\\
+
+Se ativarmos a {\bf{opção 2}}, as sugestões são apenas dados em campos que não tenham sido preenchidos, mesmo que as opções que o utilizador inseriu estejam erradas. 
+
+
+\subsection{Geração de tabuleiros}
+
+A geração de tabuleiros é feita recebendo como argumento o tamanho do tabuleiro e é criada uma matriz com esse tamanho. Por exemplo, para gerar um tabuleiro do mesmo tamanho que o exemplo, o número seria 3.
+\\
+
+As operações estão guardadas num array e, de forma aleatoria, são colocadas na matriz. 
+\\
+
+A seguir, e em conjunto com as regras da secção {\bf{3.3}} é enviada a matriz ao {\it{solver}}. Caso o problema seja satisfazivel, é considerada essa matriz uma matriz válida. É enviada para uma função que calcula os valores que vão estar na última linha e última coluna (depois do $=$). 
+\\
+
+Depois do tabuleiro pronto, é enviado para um ficheiro de texto onde é armazenada com especificado na secção {\bf{3.1}}.
+
+\section{Interface Gráfica}
+
+Para a Interface Gráfica o software usado foi o Kivy. O Kivy é uma biblioteca Python open source para desenvolvimento de uma interface de utilizador. 
+
 
 \end{document}
