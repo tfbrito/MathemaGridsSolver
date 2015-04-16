@@ -400,9 +400,9 @@ def settings_panel(self):
         DataGrid.hints = checkbox2
         DataGrid.hints_all = checkbox3
 
-    label1 = Label(text='Validar jogadas ao introduzir', id="lbl_validate")
-    label2 = Label(text='Activar hints', id="lbl_hints")
-    label3 = Label(text='Hints preenchem apenas campos vazios', id="lbl_hints_all")
+    label1 = Label(text='Validate moves in real time', id="lbl_validate")
+    label2 = Label(text='Enable hints', id="lbl_hints")
+    label3 = Label(text='Hints only fill empty spaces', id="lbl_hints_all")
     check1 = CheckBox(id="ck_validate",active=DataGrid.validate)
     check2 = CheckBox(id="ck_hints",active=DataGrid.hints)
     check3 = CheckBox(id="ck_hints_all",active=DataGrid.hints_all)
@@ -451,8 +451,8 @@ scroll.do_scroll_x = False
 
 open_btn = Button(text="Open puzzle", on_press=partial(grid.open))
 generate_btn = Button(text="Generate puzzle", on_press=partial(grid.generate))
-select_all_btn = Button(text="Sellect All", on_press=partial(grid.select_all))
-unselect_all_btn = Button(text="Unsellect All", on_press=partial(grid.unselect_all))
+select_all_btn = Button(text="Select All", on_press=partial(grid.select_all))
+unselect_all_btn = Button(text="Unselect All", on_press=partial(grid.unselect_all))
 hint_btn = Button(text="Hint", on_press=partial(grid.hint))
 settings_btn = Button(text="Settings", on_press=settings_panel)
 
