@@ -250,6 +250,9 @@ class DataGrid(GridLayout):
         DataGrid.all_sel = False
         Window.unbind(on_key_down=DataGrid._on_keyboard_down)
 
+    def validate(self, instance, **kwargs):
+        print "Validar o tabuleiro(Falta implementar)"
+
     def hint(self,instance, **kwargs):
         if(DataGrid.hints):
             childs = self.parent.children
@@ -454,6 +457,7 @@ generate_btn = Button(text="Generate puzzle", on_press=partial(grid.generate))
 select_all_btn = Button(text="Select All", on_press=partial(grid.select_all))
 unselect_all_btn = Button(text="Unselect All", on_press=partial(grid.unselect_all))
 hint_btn = Button(text="Hint", on_press=partial(grid.hint))
+validate_btn = Button(text="Validate", on_press=partial(grid.validate))
 settings_btn = Button(text="Settings", on_press=settings_panel)
 
 info_lbl = Label(text='MathemaGrids puzzle', id="lbl_info", markup=True)
@@ -464,6 +468,7 @@ btn_grid.add_widget(generate_btn)
 btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
 btn_grid.add_widget(hint_btn)
+btn_grid.add_widget(validate_btn)
 btn_grid.add_widget(settings_btn)
 btn_grid.add_widget(info_lbl)
 
