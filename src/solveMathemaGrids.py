@@ -109,13 +109,23 @@ class DataGrid(GridLayout):
     hints_all = False
 
     def load_from_filechooser(self, filechooser, path):
-        f = open(filechooser.selection[0], "r")
-        lines = f.readlines()
-        f.close()
+        global counter
+        counter = 0
+        DataGrid.childs = []
+        DataGrid.obj = 0
+        DataGrid.obj_text = None
+        DataGrid.all_sel = False
+        DataGrid.count = 0
+        DataGrid.reset_board(self)
+        res = parsing.read_board(filechooser.selection[0])
+
+        complete_board(res)
+        self.cols = len(res[1])
+        self.rows = len(res)
+        self.spacing = [1,1] 
+        for row in range(len(res)):
+            self.add_row(res[row], calculate_col_size(len(res)),self)
         
-        print lines
-
-
     def open(self, instance, **kwargs):
         view = ModalView(auto_dismiss=False)
 
@@ -124,15 +134,12 @@ class DataGrid(GridLayout):
         fileChooser = FileChooserListView(id=filechooser,path="/home/")
 
         buttons = BoxLayout(height=30,size_hint_y=None)
-
         cancel_btn = Button(text='Cancel')
         open2_btn = Button(text="Open") 
 
-
         cancel_btn.bind(on_press=view.dismiss)
-        open2_btn.bind(on_release=partial(self.load_from_filechooser, fileChooser))
+        open2_btn.bind(on_release=partial(self.load_from_filechooser, fileChooser),on_press=view.dismiss)
         
-
         modal_layout = BoxLayout(orientation="vertical")
         modal_layout.add_widget(chooser_grid)
         modal_layout2 = BoxLayout(orientation="horizontal",size_hint_y=None)
@@ -140,8 +147,6 @@ class DataGrid(GridLayout):
         modal_layout2.add_widget(cancel_btn)
 
         modal_layout.add_widget(modal_layout2)
-
-
         chooser_grid.add_widget(fileChooser)
 
         view.add_widget(modal_layout)
