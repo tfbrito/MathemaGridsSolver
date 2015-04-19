@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+from kivy.uix.spinner import Spinner
 import parsing
 import generate_board
 import os
@@ -107,6 +108,7 @@ class DataGrid(GridLayout):
     validate = False
     hints = False
     hints_all = False
+    board_size = "2"
 
     def load_from_filechooser(self, filechooser, path):
         global counter
@@ -354,7 +356,8 @@ class DataGrid(GridLayout):
         DataGrid.all_sel = False
         DataGrid.count = 0
         DataGrid.reset_board(self)
-        res = generate_board.generate(3,0)
+        size= int(DataGrid.board_size)
+        res = generate_board.generate(size, 0)
 
         complete_board(res[0])
         self.cols = len(res[0][1])
@@ -381,11 +384,14 @@ class DataGrid(GridLayout):
 checkbox1 = DataGrid.validate
 checkbox2 = DataGrid.hints
 checkbox3 = DataGrid.hints_all
+board_size_input = DataGrid.board_size
+
 def settings_panel(self):
     info_lbl.text = 'MathemaGrids puzzle'
     global checkbox1
     global checkbox2
     global checkbox3
+    global board_size_input
 
     def on_checkbox_active(checkbox, value):        
         if(checkbox.id == "ck_validate"):
@@ -402,16 +408,21 @@ def settings_panel(self):
         DataGrid.validate = checkbox1
         DataGrid.hints = checkbox2
         DataGrid.hints_all = checkbox3
+        DataGrid.board_size = size_input.text
 
     label1 = Label(text='Validate moves in real time', id="lbl_validate")
     label2 = Label(text='Enable hints', id="lbl_hints")
     label3 = Label(text='Hints only fill empty spaces', id="lbl_hints_all")
+    label4 = Label(test='Choose generated board size', id='board_size_input')
     check1 = CheckBox(id="ck_validate",active=DataGrid.validate)
     check2 = CheckBox(id="ck_hints",active=DataGrid.hints)
     check3 = CheckBox(id="ck_hints_all",active=DataGrid.hints_all)
     check1.bind(active=on_checkbox_active)
     check2.bind(active=on_checkbox_active)
     check3.bind(active=on_checkbox_active)
+
+    size_input = Spinner(text='Size', values=('2', '3', '4'), size=(100, 44))
+    size_input.is_open
 
     settings_grid = GridLayout(cols=2)
     settings_grid.add_widget(label1)
@@ -420,6 +431,9 @@ def settings_panel(self):
     settings_grid.add_widget(check2)
     settings_grid.add_widget(label3)
     settings_grid.add_widget(check3)
+    settings_grid.add_widget(label4)
+    settings_grid.add_widget(size_input)
+
     
     view = ModalView(auto_dismiss=False)
     
