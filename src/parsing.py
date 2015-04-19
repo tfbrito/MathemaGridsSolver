@@ -1,5 +1,3 @@
-__author__ = 'Jpereira'
-
 import sys
 from pyparsing import Word, Literal, nums, Forward, ParseException
 sys.path
