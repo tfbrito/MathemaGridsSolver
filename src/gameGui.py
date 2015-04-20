@@ -22,6 +22,7 @@ from functools import partial
 from random import randrange
 from solveMathemaGrids import complete_board
 from solveMathemaGrids import calculate_col_size
+from solveMathemaGrids import solve
 
 Builder.load_string('''
 <CLabel>:
@@ -71,6 +72,9 @@ class DataGrid(GridLayout):
         self.spacing = [1, 1]
         for row in range(len(res)):
             self.add_row(res[row], calculate_col_size(len(res)), self)
+
+        #DataGrid.solution = res[1] colocar aqui a solução!
+        #DataGrid.raw_table = [row[:] for row in DataGrid.solution]
 
     def open(self, instance, **kwargs):
         view = ModalView(auto_dismiss=False)
