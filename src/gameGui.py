@@ -368,7 +368,7 @@ def settings_panel(self):
     label1 = Label(text='Validate moves in real time', id="lbl_validate")
     label2 = Label(text='Enable hints', id="lbl_hints")
     label3 = Label(text='Hints only fill empty spaces', id="lbl_hints_all")
-    label4 = Label(test='Choose generated board size', id='board_size_input')
+    label4 = Label(text='Choose generated board size', id='board_size_input')
     check1 = CheckBox(id="ck_validate", active=DataGrid.validate)
     check2 = CheckBox(id="ck_hints", active=DataGrid.hints)
     check3 = CheckBox(id="ck_hints_all", active=DataGrid.hints_all)
@@ -376,7 +376,7 @@ def settings_panel(self):
     check2.bind(active=on_checkbox_active)
     check3.bind(active=on_checkbox_active)
 
-    size_input = Spinner(text='Size', values=('2', '3', '4'), size=(100, 44))
+    size_input = Spinner(text=DataGrid.board_size, values=('2', '3', '4'), size=(100, 44))
     size_input.is_open
 
     settings_grid = GridLayout(cols=2)
