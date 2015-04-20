@@ -1,14 +1,11 @@
 # -*- coding: UTF-8 -*-
-
 from z3 import Int, And, Not
-
 
 def complete_board(board):
     for i in range(len(board)):
         if i % 2 != 0:
             board[i].append(',')
             board[i].append(',')
-
 
 def solve(board):
     size = (len(board[0]) - 1) / 2
@@ -51,10 +48,8 @@ def solve(board):
                         equation = equation + "-" + "x[" + str(i/2) + "][" + str((j+1)/2)+"]" + ">0"
                         bigger_than_zero.append(eval(equation))
 
-
 def calculate_col_size(num_cols):
     size = 0.1
     for i in range(num_cols-7):
         size -= 0.001
     return size
-

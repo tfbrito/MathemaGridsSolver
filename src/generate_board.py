@@ -1,7 +1,7 @@
-from z3 import Int, And, Not, Distinct, Solver, sat
-
+# -*- coding: UTF-8 -*-
 import random
 
+from z3 import Int, And, Not, Distinct, Solver, sat
 
 def generate_symbols(size):
     board = []
@@ -24,7 +24,6 @@ def generate_symbols(size):
                 else:
                     board[i].append(',')
     return board
-
 
 def attempt_to_solve(board):
 
@@ -103,7 +102,6 @@ def attempt_to_solve(board):
     else:
         return 0
 
-
 def generate_results(board, solution):
     for i in range(0, len(board), 2):
         equation = ""
@@ -142,7 +140,6 @@ def generate_results(board, solution):
 
     return board
 
-
 def generate(size, hints):
     generated_board = generate_symbols(size)
     solution = attempt_to_solve(generated_board)
@@ -163,4 +160,3 @@ def generate(size, hints):
         hints -= 1
 
     return generated_board_with_results, solution
-

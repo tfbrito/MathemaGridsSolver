@@ -1,7 +1,8 @@
+# -*- coding: UTF-8 -*-
 import sys
-from pyparsing import Word, Literal, nums, Forward, ParseException
 sys.path
 
+from pyparsing import Word, Literal, nums, Forward, ParseException
 
 def read_board(file):
     integer = Word(nums)  # simple unsigned integer
@@ -20,8 +21,6 @@ def read_board(file):
 
     lastLine = Forward()
     lastLine << ((integer + "," + lastLine) | integer)
-
-    #print "\n Solving MathemaGrids \n"
 
     f = open(file, "r")
     line = f.readline()
@@ -45,16 +44,7 @@ def read_board(file):
             except ParseException:
                 print "Error on n-1 line"
         line = f.readline()
-
-    #print "========\nINPUT\n========"
-
-    #for i in range(len(table)):
-        #print table[i]
-
-    #print "========\nFIM INPUT\n========"
-
     return table
-
 
 def save_board(board_to_save, text_file_name):
     name = text_file_name+'.txt'  # Name of text file coerced with +.txt
@@ -75,5 +65,3 @@ def save_board(board_to_save, text_file_name):
         board_file.write("\n")
 
     board_file.close()
-
-

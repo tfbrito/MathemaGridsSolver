@@ -1,7 +1,11 @@
-from random import randrange
+# -*- coding: UTF-8 -*-
+import generate_board
+import parsing
+import re
+
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import ListProperty, partial
+from kivy.properties import ListProperty
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.checkbox import CheckBox
@@ -10,14 +14,14 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.modalview import ModalView
 from kivy.uix.scrollview import ScrollView
-import generate_board
-from solveMathemaGrids import complete_board
 from kivy.uix.spinner import Spinner
-import parsing
-from solveMathemaGrids import calculate_col_size
 from kivy.uix.togglebutton import ToggleButton
 from kivy.core.window import Window
-import re
+
+from functools import partial
+from random import randrange
+from solveMathemaGrids import complete_board
+from solveMathemaGrids import calculate_col_size
 
 Builder.load_string('''
 <CLabel>:
@@ -29,16 +33,13 @@ Builder.load_string('''
       pos: self.pos
 ''')
 
+counter = 0
 
 class CLabel(ToggleButton):
     bgcolor = ListProperty([1, 1, 1])
 
-
 class HeaderLabel(Label):
     bgcolor = ListProperty([0.108, 0.476, 0.611])
-
-counter = 0
-
 
 class DataGrid(GridLayout):
     childs = []
@@ -443,7 +444,6 @@ root = BoxLayout(orientation="horizontal")
 
 root.add_widget(scroll)
 root.add_widget(btn_grid)
-
 
 class MathemaGridsApp(App):
     def build(self):
