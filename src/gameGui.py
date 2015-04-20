@@ -236,13 +236,13 @@ class DataGrid(GridLayout):
 
             gotit = False
             gotit2 = False
-            while(gotit == False):
+            while(not gotit):
                 if(DataGrid.count >= len(DataGrid.solution) * len(DataGrid.solution[0])):
                     info_lbl.text = '[color=008000]No more hints![/color]'
                     gotit = True
                     gotit2 = True
                 else:
-                    while(gotit2 == False):
+                    while(not gotit2):
                         random_index_x = randrange(0,len(DataGrid.solution))
                         random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
                         if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
@@ -252,7 +252,7 @@ class DataGrid(GridLayout):
                     res = check(childs,random_index_x,random_index_y,my_id)
                     if(res == True):
                         gotit = True
-                        DataGrid.count = DataGrid.count + 1
+                        DataGrid.count += 1
                     elif(res == -1):
                         gotit2 = False
                         gotit = False
@@ -302,6 +302,7 @@ class DataGrid(GridLayout):
                 self.remove_widget(c)
 
     def generate(self, instance, **kwargs):
+        info_lbl.text = 'MathemaGrids puzzle'
         global counter
         counter = 0
         DataGrid.childs = []
