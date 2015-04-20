@@ -209,51 +209,51 @@ class DataGrid(GridLayout):
                         return
         info_lbl.text = '[color=32CD32]Victory![/color]'
 
-    def hint(self, instance, **kwargs):
-        if DataGrid.hints:
+    def hint(self,instance, **kwargs):
+        if(DataGrid.hints):
             childs = self.parent.children
 
-            def check(childs, random_index_x, random_index_y, my_id):
+            def check(childs,random_index_x,random_index_y,my_id):
                 done = False
                 sol = str(DataGrid.solution[random_index_x][random_index_y])
                 for ch in childs:
-                    for c in ch.children:
-                        if str(c.id) == my_id and DataGrid.hints_all:
-                            if c.text[14:-8] != sol:
-                                c.state = "normal"
+                    for c in ch.children:                        
+                        if(str(c.id) == my_id and not DataGrid.hints_all):
+                            if(c.text[14:-8] != sol):
+                                c.state = "normal" 
                                 c.text = '[color=000000]' + sol + '[/color]'
                                 DataGrid.solution[random_index_x][random_index_y] = "OK"
                                 return True
-                        elif str(c.id) == my_id and DataGrid.hints_all:
-                            if c.text == '[color=000000][/color]' or c.text == '[color=FF0000][/color]':
-                                c.state = "normal"
+                        elif(str(c.id) == my_id and DataGrid.hints_all):
+                            if(c.text == '[color=000000][/color]' or c.text == '[color=FF0000][/color]'):
+                                c.state = "normal" 
                                 c.text = '[color=000000]' + sol + '[/color]'
                                 DataGrid.solution[random_index_x][random_index_y] = "OK"
                                 return True
-                            else:
+                            else: 
                                 return -1
                 return False
 
             gotit = False
             gotit2 = False
-            while not gotit:
-                if DataGrid.count >= len(DataGrid.solution) * len(DataGrid.solution[0]):
+            while(gotit == False):
+                if(DataGrid.count >= len(DataGrid.solution) * len(DataGrid.solution[0])):
                     info_lbl.text = '[color=008000]No more hints![/color]'
                     gotit = True
                     gotit2 = True
                 else:
-                    while not gotit2:
-                        random_index_x = randrange(0, len(DataGrid.solution))
-                        random_index_y = randrange(0, len(DataGrid.solution[random_index_x]))
-                        if str(DataGrid.solution[random_index_x][random_index_y]) != "OK":
+                    while(gotit2 == False):
+                        random_index_x = randrange(0,len(DataGrid.solution))
+                        random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
+                        if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
                             gotit2 = True
                             gotit = True
-                    my_id = "x_" + str(random_index_x*2) + "_" + str(random_index_y*2)
-                    res = check(childs, random_index_x, random_index_y, my_id)
-                    if res:
+                    my_id = "x_" + str(random_index_x) + "_" + str(random_index_y)
+                    res = check(childs,random_index_x,random_index_y,my_id)
+                    if(res == True):
                         gotit = True
-                        DataGrid.count += 1
-                    elif res == -1:
+                        DataGrid.count = DataGrid.count + 1
+                    elif(res == -1):
                         gotit2 = False
                         gotit = False
         else:
