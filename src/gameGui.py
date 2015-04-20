@@ -210,7 +210,7 @@ class DataGrid(GridLayout):
         info_lbl.text = '[color=32CD32]Victory![/color]'
 
     def hint(self,instance, **kwargs):
-        if(DataGrid.hints):
+        if(DataGrid.hints and (DataGrid.count < len(DataGrid.solution) * len(DataGrid.solution[0]))):
             childs = self.parent.children
 
             def check(childs,random_index_x,random_index_y,my_id):
@@ -256,8 +256,10 @@ class DataGrid(GridLayout):
                     elif(res == -1):
                         gotit2 = False
                         gotit = False
-        else:
+        elif(not DataGrid.hints):
             info_lbl.text = '[color=FF0000]Hints are disabled!\nEnable them on the settings panel.[/color]'
+        else:
+            info_lbl.text = '[color=008000]No more hints![/color]'
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
             info_lbl.text = 'MathemaGrids puzzle'
