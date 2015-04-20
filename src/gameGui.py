@@ -318,16 +318,16 @@ class DataGrid(GridLayout):
         DataGrid.count = 0
         DataGrid.reset_board(self)
         size= int(DataGrid.board_size)
-        res = generate_board.generate(size, 0)
+        res, sol = generate_board.generate(size, 0)
 
-        complete_board(res[0])
-        self.cols = len(res[0][1])
-        self.rows = len(res[0])
+        complete_board(res)
+        self.cols = len(sol)
+        self.rows = len(res)
         self.spacing = [1, 1]
-        for row in range(len(res[0])):
-            self.add_row(res[0][row], calculate_col_size(len(res[0])),self)
-        DataGrid.solution = res[1]
-        DataGrid.raw_table = [row[:] for row in res[1]]
+        for row in range(len(res)):
+            self.add_row(res[row], calculate_col_size(len(res)),self)
+        DataGrid.solution = sol
+        DataGrid.raw_table = [row[:] for row in sol]
 
     def __init__(self, body_data, **kwargs):
         super(DataGrid, self).__init__(**kwargs)
@@ -412,15 +412,16 @@ def settings_panel(self):
     view.open()
 
 ############################
-board = generate_board.generate(2, 0)
+
+board, solution= generate_board.generate(2, 0)
 complete_board(board[0])
 
 # Declaration of the grid object
-grid = DataGrid(board[0])
-grid.rows = len(board[0])
+grid = DataGrid(board)
+grid.rows = len(board)
 
-DataGrid.solution = board[1]
-DataGrid.raw_table = [row[:] for row in board[1]]
+DataGrid.solution = solution
+DataGrid.raw_table = [row[:] for row in solution]
 
 scroll = ScrollView(size_hint=(1, 1), size=(400, 500000), scroll_y=0, pos_hint={'center_x': .5, 'center_y': .5})
 scroll.add_widget(grid)
