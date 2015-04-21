@@ -77,6 +77,7 @@ class DataGrid(GridLayout):
         #DataGrid.raw_table = [row[:] for row in DataGrid.solution]
 
     def open(self, instance, **kwargs):
+        info_lbl.text = 'MathemaGrids puzzle'
         view = ModalView(auto_dismiss=False)
 
         filechooser = ""
@@ -321,7 +322,7 @@ class DataGrid(GridLayout):
         res, sol = generate_board.generate(size, 0)
 
         complete_board(res)
-        self.cols = len(sol)
+        self.cols = len(res[0])
         self.rows = len(res)
         self.spacing = [1, 1]
         for row in range(len(res)):
@@ -414,7 +415,7 @@ def settings_panel(self):
 ############################
 
 board, solution= generate_board.generate(2, 0)
-complete_board(board[0])
+complete_board(board)
 
 # Declaration of the grid object
 grid = DataGrid(board)
