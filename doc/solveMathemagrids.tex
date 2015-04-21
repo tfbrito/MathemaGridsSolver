@@ -7,6 +7,7 @@
 \usepackage{verbatim}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{titling}
 
 \hypersetup{
     colorlinks=true,       % false: boxed links; true: colored links
@@ -16,13 +17,22 @@
     urlcolor=black           % color of external links
 }
 
-\title{Solve MathemaGrids\\ Z3}
+\pretitle{%
+  \begin{center}
+  \LARGE
+  \includegraphics[scale=0.4]{um_logo}\\[\bigskipamount]
+}
+\posttitle{\end{center}}
+
+\title{MathemaGrids Solver\\ implementation using Z3 SMT Solver}
 \author{José Pereira \texttt{pg27748} 
 		\\ Marta Azevedo \texttt{pg27763}
 		              \\ Tiago Brito \texttt{pg27724}}
-		
 \begin{document}
+\begin{titlepage}
 \maketitle
+\end{titlepage}
+
 \section{MathemaGrids}
 
 \paragraph{} 
@@ -40,29 +50,49 @@ Para isso vamos usar como exemplo o seguinte tabuleiro:
 \end{center}
 
 Neste exemplo, já é dada uma {\it{hint}}, o $7$ que aparece na primeira linha, primeira coluna.
-
-\section{Z3}
-\paragraph{} 
+\newpage
+\section{Implementação}
+\subsection{SMT Solver}
 Como {\sc{SMT-solver}} estamos a usar o {\sc{z3}} Theorem Prover da Microsoft Research. Este, é usado em vários softwares de verificação formal. 
-\\
 
+\subsection{Linguagem de Programação}
 Como linguagem de interface com o {\sc{z3}} preferimos usar o {\sc{python}} {\sc{z3Py}} devido à sua {\sc{API}} fácil de usar e devido a ser uma linguagem simples e eficaz para o que queriamos fazer.
+\subsection{Interface Gráfica}
+A nível de interface gráfica, após a pesquisa pelas mais diversas frameworks para python decidimos usar a {\sc{Kivy}} v1.9.0. 
+\\
+{\sc{Kivy}} tráta-se de uma Framework multi-plataforma para python, correndo em Linux, Windows, OS X, Android e iOS que é grátis e se encontra sobre a MIT License.Além disto permite também utilizar os mais diversos protocolos e dispositivos como por exemplo WM Touch, WM Pen, Mac OS X Trackpad e Magic Mouse, etc.
 
-\section{{\it{solveMathemaGrids.py}}}
+Sendo também uma das principais vantagens o facto de ser "GPU Accelerated"
+\newpage
+\section{Estrutura}
+De forma ao projeto não se tornar muito complexo, foi feita a divisão por módulos, tendo os seguintes 4 módulos:
 
-\paragraph{} 
-O $solveMathemaGrids.py$ é invocado como um ficheiro python qualquer:
-\begin{verbatim}
- $ python solveSurvo.py <ficheiro\_input>
-\end{verbatim}
-por exemplo,
-\begin{verbatim}
- $ python solveSurvo.py exemplo_1.txt
-\end{verbatim}
+\subsection{\texttt{gameGUI.py}}
+Este é o módulo responsável por toda a interface grática. É ele o principal, sendo quem inicializa o jogo e utiliza os restantes módulos de forma a executar as respetivas funções.
+\subsection{\texttt{generate\_board.py}}
+Trata-se do módulo responsável por criar tabuleiros e gerar as suas soluções utilizando o Z3.
+\subsection{\texttt{parsing.py}}
+É o módulo responsável por fazer a leitura de um ficheiro de texto. Neste módulo está implementada um Gramática(utilizando a biblioteca \it{pyparsing}) de forma a validar o input do ficheiro
+\subsection{\texttt{solveMathemaGrids.py}}
+Este trata-se de um módulo de suporte onde temos algunas funções auxiliares bem como a função que nos permite obter a solução de um tabuleiro lido de ficheiro.
+\newpage
+\section{Execução}
+Para a execução do programa basta executar na consola 
+\begin{center}
+\textbf{python gameGUI.py}
+\end{center}
+tendo atenção ás ás seguintes dependencias:
+\subsection{Python}
+Disponivel já de raiz com o Linux e OSX, mas também disponivel para Windows.
+\subsection{Kivy}
+Necessária a Kivy v1.9.0 disponivel no website http://kivy.org/
+\subsection{Z3}
+Disponivel em https://github.com/Z3Prover/z3
+\subsection{pyparsing}
+Disponivel em http://pyparsing.wikispaces.com/ e com instalação simples através do pip, bastando fazer \it{pip install pyparsing}
+\newpage
 
-É necessário que o {\sc{z3}} esteja instalado e conectado com o {\sc{python}}.
-
-\subsection{Ficheiros input}
+\section{Ficheiros input}
 
 \paragraph{} 
 
@@ -223,10 +253,6 @@ A seguir, e em conjunto com as regras da secção {\bf{3.3}} é enviada a matriz
 \\
 
 Depois do tabuleiro pronto, é enviado para um ficheiro de texto onde é armazenada com especificado na secção {\bf{3.1}}.
-
-\section{Interface Gráfica}
-
-Para a Interface Gráfica o software usado foi o Kivy. O Kivy é uma biblioteca Python open source para desenvolvimento de uma interface de utilizador. 
 
 
 \end{document}
