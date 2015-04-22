@@ -72,25 +72,28 @@ Este é o módulo responsável por toda a interface grática. É ele o principal
 \subsection{\texttt{generate\_board.py}}
 Trata-se do módulo responsável por criar tabuleiros e gerar as suas soluções utilizando o Z3.
 \subsection{\texttt{parsing.py}}
-É o módulo responsável por fazer a leitura de um ficheiro de texto. Neste módulo está implementada um Gramática(utilizando a biblioteca \it{pyparsing}) de forma a validar o input do ficheiro
+É o módulo responsável por fazer a leitura de um ficheiro de texto. Neste módulo está implementada um Gramática(utilizando a biblioteca {\it{pyparsing}}) de forma a validar o input do ficheiro
 \subsection{\texttt{solveMathemaGrids.py}}
 Este trata-se de um módulo de suporte onde temos algunas funções auxiliares bem como a função que nos permite obter a solução de um tabuleiro lido de ficheiro.
 \newpage
 \section{Execução}
 Para a execução do programa basta executar na consola 
-\begin{center}
-\textbf{python gameGUI.py}
-\end{center}
+\begin{verbatim}
+$ python gameGUI.py
+\end{verbatim}
 tendo atenção ás ás seguintes dependencias:
 \subsection{Python}
 Disponivel já de raiz com o Linux e OSX, mas também disponivel para Windows.
 \subsection{Kivy}
-Necessária a Kivy v1.9.0 disponivel no website http://kivy.org/
+Necessário $Kivy$ v1.9.0 disponivel no website {\url{http://kivy.org/}}
 \subsection{Z3}
-Disponivel em https://github.com/Z3Prover/z3
+Disponivel em {\url{https://github.com/Z3Prover/z3}}
 \subsection{pyparsing}
-Disponivel em http://pyparsing.wikispaces.com/ e com instalação simples através do pip, bastando fazer \it{pip install pyparsing}
-\newpage
+Disponivel em {\url{http://pyparsing.wikispaces.com/}} e com instalação simples através do pip, bastando fazer 
+
+\begin{verbatim}
+$ pip install pyparsing
+\end{verbatim}
 
 \section{Ficheiros input}
 
@@ -127,7 +130,8 @@ Também estão representadas as operações sendo o {\bf{*}} a multiplicação, 
 %\end{center}
 
 \subsection{Codificação do {\sc{MathemaGrids}}}
-\paragraph{} Para codificar o puzzle,usamos as seguintes propriedades (descritas em {\url{https://www.brainbashers.com/mathemagrids.asp}}):
+\paragraph{} Para codificar o puzzle,usamos as seguintes propriedades \\
+(descritas em {\url{https://www.brainbashers.com/mathemagrids.asp}}):
  \begin{enumerate}
  \item Usar todos os digitos de 1 a $m*m$ (no nosso exemplo, até $9$);
  \item Nenhum número pode ser repetido;
@@ -253,6 +257,4 @@ A seguir, e em conjunto com as regras da secção {\bf{3.3}} é enviada a matriz
 \\
 
 Depois do tabuleiro pronto, é enviado para um ficheiro de texto onde é armazenada com especificado na secção {\bf{3.1}}.
-
-
 \end{document}
