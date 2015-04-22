@@ -13,7 +13,13 @@ pyparsing: http://pyparsing.wikispaces.com/
 - sudo apt-get install python-kivy
 
 ##Usage
-python src/game.py --> Executes in GUI mode
+python src/game.py < flags > < file >
 
 #####flags:
 --console -> Executes in console mode
+
+Notes: 
+- By default the game initializes in GUI mode
+- < flags > and < file > are optional and intended for console mode
+
+
