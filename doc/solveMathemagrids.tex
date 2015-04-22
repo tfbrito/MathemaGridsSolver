@@ -50,56 +50,64 @@ Para isso vamos usar como exemplo o seguinte tabuleiro:
 \end{center}
 
 Neste exemplo, já é dada uma {\it{hint}}, o $7$ que aparece na primeira linha, primeira coluna.
-\newpage
+
 \section{Implementação}
 \subsection{SMT Solver}
 Como {\sc{SMT-solver}} estamos a usar o {\sc{z3}} Theorem Prover da Microsoft Research. Este, é usado em vários softwares de verificação formal. 
 
 \subsection{Linguagem de Programação}
 Como linguagem de interface com o {\sc{z3}} preferimos usar o {\sc{python}} {\sc{z3Py}} devido à sua {\sc{API}} fácil de usar e devido a ser uma linguagem simples e eficaz para o que queriamos fazer.
+
 \subsection{Interface Gráfica}
-A nível de interface gráfica, após a pesquisa pelas mais diversas frameworks para python decidimos usar a {\sc{Kivy}} v1.9.0. 
+No que toca à Interface Gráfica, foi feito um trabalho de pesquisa prévio pelas mais diversas frameworks para python e, no final, decidimos usar o {\sc{Kivy}} v1.9.0. 
 \\
-{\sc{Kivy}} tráta-se de uma Framework multi-plataforma para python, correndo em Linux, Windows, OS X, Android e iOS que é grátis e se encontra sobre a MIT License.Além disto permite também utilizar os mais diversos protocolos e dispositivos como por exemplo WM Touch, WM Pen, Mac OS X Trackpad e Magic Mouse, etc.
 
-Sendo também uma das principais vantagens o facto de ser "GPU Accelerated"
-\newpage
+{\sc{Kivy}} tráta-se de uma Framework multi-plataforma para Python, correndo em Linux, Windows, OS X, Android e iOS. É uma ferramenta grátis e é ``GPU Accelerated". 
+
 \section{Estrutura}
-De forma ao projeto não se tornar muito complexo, foi feita a divisão por módulos, tendo os seguintes 4 módulos:
+O Projeto é dividido em quatro módulos:
+\begin{itemize}
+\item{\texttt{gameGUI.py}
 
-\subsection{\texttt{gameGUI.py}}
-Este é o módulo responsável por toda a interface grática. É ele o principal, sendo quem inicializa o jogo e utiliza os restantes módulos de forma a executar as respetivas funções.
-\subsection{\texttt{generate\_board.py}}
-Trata-se do módulo responsável por criar tabuleiros e gerar as suas soluções utilizando o Z3.
-\subsection{\texttt{parsing.py}}
-É o módulo responsável por fazer a leitura de um ficheiro de texto. Neste módulo está implementada um Gramática(utilizando a biblioteca {\it{pyparsing}}) de forma a validar o input do ficheiro
-\subsection{\texttt{solveMathemaGrids.py}}
-Este trata-se de um módulo de suporte onde temos algunas funções auxiliares bem como a função que nos permite obter a solução de um tabuleiro lido de ficheiro.
-\newpage
+Este é o módulo responsável por toda a interface grática. É ele o principal, sendo quem inicializa o jogo e utiliza os restantes módulos de forma a executar as respetivas funções.}
+
+\item{\texttt{generate\_board.py}
+
+Trata-se do módulo responsável por criar tabuleiros e gerar as suas soluções utilizando o $Z3$.}
+
+\item{\texttt{parsing.py}
+
+É o módulo responsável por fazer a leitura de um ficheiro de texto. Neste módulo está implementada uma gramática (que utiliza a biblioteca {\it{pyparsing}}) de forma a validar o input do ficheiro.}
+
+\item{\texttt{solveMathemaGrids.py}
+
+Este trata-se de um módulo de suporte onde temos algunas funções auxiliares bem como a função que nos permite usar o {\it{Solver}} para obter a solução de um tabuleiro lido de ficheiro.}
+\end{itemize}
+
 \section{Execução}
-Para a execução do programa basta executar na consola 
+Para a execução do programa basta executar na consola :
 \begin{verbatim}
 $ python gameGUI.py
 \end{verbatim}
+
 tendo atenção ás ás seguintes dependencias:
-\subsection{Python}
-Disponivel já de raiz com o Linux e OSX, mas também disponivel para Windows.
-\subsection{Kivy}
-Necessário $Kivy$ v1.9.0 disponivel no website {\url{http://kivy.org/}}
+\begin{itemize}
+\item{ {\bf{Python}} : Disponivel já de raiz com o Linux e OSX, mas também disponivel para Windows.}
+\item{ {\bf{Kivy}} : Necessário $Kivy$ v1.9.0 disponivel no website {\url{http://kivy.org/}}.
 \\
 Para instalar:
 \begin{verbatim}
 $ sudo add-apt-repository ppa:kivy-team/kivy
 $ sudo apt-get install python-kivy
 \end{verbatim}
-\subsection{Z3}
-Disponivel em {\url{https://github.com/Z3Prover/z3}}
-\subsection{pyparsing}
-Disponivel em {\url{http://pyparsing.wikispaces.com/}} e com instalação simples através do pip, bastando fazer 
-
+}
+\item{ {\bf{Z3}} : Disponivel em {\url{https://github.com/Z3Prover/z3}}:}
+\item{ {\bf{pyparsing}} :  Disponivel em {\url{http://pyparsing.wikispaces.com/}} e com instalação simples através do pip, bastando fazer 
 \begin{verbatim}
 $ pip install pyparsing
 \end{verbatim}
+}
+\end{itemize}
 
 \section{Ficheiros input}
 
@@ -190,7 +198,6 @@ unique = [Distinct([x[j][i] for i in range(size) for j in range(size)])]
                     not_one_exceptions.append(Not(x[(i+1)/2][j/2] == 1))
 \end{verbatim}
 }
-\newpage
 
 \item Como a operação crítica para isto acontecer é apenas a subtração: 
 
