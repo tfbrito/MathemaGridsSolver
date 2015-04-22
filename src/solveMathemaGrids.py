@@ -126,22 +126,15 @@ def solve(board):
     rules = instance+max_size + unique + not_one_exceptions + horizontal_equations + vertical_equations + bigger_than_zero + not_one_exceptions
     s = Solver()
 
-    for i in bigger_than_zero:
-        print i
     s.add(rules)
 
     if s.check() == sat:
-        for i in board:
-            print i
-        print "\nSolution:\n"
+
         m = s.model()
         r = [[m.evaluate(x[i][j]) for j in range(size)]
              for i in range(size)]
-        for l in r:
-            print l
         return r
     else:
-        print "Impossible!"
         return []
 
 
