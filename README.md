@@ -11,3 +11,9 @@ pyparsing: http://pyparsing.wikispaces.com/
 #####Kivy:
 - sudo add-apt-repository ppa:kivy-team/kivy
 - sudo apt-get install python-kivy
+
+##Usage
+python src/game.py --> Executes in GUI mode
+
+#####flags:
+--console -> Executes in console mode
