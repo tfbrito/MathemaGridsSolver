@@ -41,14 +41,18 @@ def generate_puzzle():
 	print "4 - Puzzle of dimension 9x9 (WARNING: It could take a long time!!!)"
 	print "Another number bigger than 4 (WARNING: It could not end!!)"
 	val = input("\nWich one do you want? ")
-	val2 = input("\nDo you want a puzzle with hints? (0/1/2/3): ")
-	if(val2 == 0 or val2 == 1 or val2 == 2 or val2 == 3):
-		print "\nGenerating puzzle of size " + str(val) + " with " + str(val2) + " hints. Please Wait..."
-		puzzle, solution = generate(val,val2)
+	if(val>2):
+		val2 = input("\nDo you want a puzzle with hints? (0/1/2/3): ")
+		if(val2 == 0 or val2 == 1 or val2 == 2 or val2 == 3):
+			print "\nGenerating puzzle of size " + str(val) + " with " + str(val2) + " hints. Please Wait..."
+			puzzle, solution = generate(val,val2)
+		else:
+			print "Invalid option. Considering 0 hints."
+			print "\nGenerating puzzle of size " + str(val) + " with 0 hints. Please Wait..."
+			puzzle, solution = generate(val,0)
 	else:
-		print "Invalid option. Considering 0 hints."
-		print "\nGenerating puzzle of size " + str(val) + " with 0 hints. Please Wait..."
-		puzzle, solution = generate(val,0)
+		print "Wrong choice!"
+		generate_puzzle()
 
 	print "\nThe Generated puzzle:\n"
 	for i in range(len(puzzle)):
@@ -57,6 +61,14 @@ def generate_puzzle():
 	print "\nIt's Solution:\n"
 	for i in range(len(solution)):
 		print solution[i]
+
+	val3 = raw_input("\nDo you want to save this puzzle and solution to file? (y/N): ")
+	if(str(val3) == "y" or str(val3) == "Y"):
+		val4 = raw_input("Which name do you want? ")
+		print "\nSaving puzzle and solution. Please wait...\n"
+		parsing.save_board(puzzle,"puzzle-"+str(val4))
+		parsing.save_board(solution,"solution-"+str(val4))
+		print "Files saved under names puzzle-" + str(val4) + " and solution-" + str(val4) + " in current directory"
 
 	time.sleep(5)
 	menu()
