@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.4.29)  21 APR 2015 17:55
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.4.29)  22 APR 2015 10:21
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -736,172 +736,172 @@ Package babel Info: Redefining portuges shorthand "|
 Package babel Info: Redefining portuges shorthand "|
 (babel)             in language append on input line 87.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 89.
+(babel)             in language append on input line 95.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 91.
+(babel)             in language append on input line 97.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 98.
+(babel)             in language append on input line 104.
 
-Underfull \hbox (badness 10000) in paragraph at lines 115--117
+Underfull \hbox (badness 10000) in paragraph at lines 121--123
 
  []
 
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 132.
+(babel)             in language append on input line 138.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 136.
+(babel)             in language append on input line 142.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 136.
+(babel)             in language append on input line 142.
 [4]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 152.
+(Font)              <9> on input line 158.
 
-Overfull \hbox (20.11697pt too wide) in paragraph at lines 155--155
+Overfull \hbox (20.11697pt too wide) in paragraph at lines 161--161
  []\T1/cmtt/m/n/9 unique = [Distinct([x[j][i] for i in range(size) for j in ran
 ge(size)])][] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 158--159
+Underfull \hbox (badness 10000) in paragraph at lines 164--165
 
  []
 
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 160.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 166.
 
 (/usr/local/texlive/2013/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <9> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 160.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 166.
 
-Overfull \hbox (20.11697pt too wide) in paragraph at lines 182--182
+Overfull \hbox (20.11697pt too wide) in paragraph at lines 188--188
  []                    \T1/cmtt/m/n/9 not_one_exceptions.append(Not(x[i/2][(j+1
 )/2] == 1))[] 
  []
 
 
-Overfull \hbox (20.11697pt too wide) in paragraph at lines 184--184
+Overfull \hbox (20.11697pt too wide) in paragraph at lines 190--190
  []                    \T1/cmtt/m/n/9 not_one_exceptions.append(Not(x[(i+1)/2][
 j/2] == 1))[] 
  []
 
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 187.
+(babel)             in language append on input line 193.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 187.
+(babel)             in language append on input line 193.
 [5]
-Overfull \hbox (76.80313pt too wide) in paragraph at lines 198--198
+Overfull \hbox (76.80313pt too wide) in paragraph at lines 204--204
  []                 \T1/cmtt/m/n/9 bigger_than_zero.append(Not(x[i/2][(j-1)/2] 
 - x[i/2][(j+1)/2] < 0))[] 
  []
 
 
-Overfull \hbox (100.42236pt too wide) in paragraph at lines 202--202
+Overfull \hbox (100.42236pt too wide) in paragraph at lines 208--208
  []                     \T1/cmtt/m/n/9 if n > 2 and str(board[i][n]) != "." and
  not(board[i][n].isdigit()):[] 
  []
 
 
-Overfull \hbox (5.94543pt too wide) in paragraph at lines 203--203
+Overfull \hbox (5.94543pt too wide) in paragraph at lines 209--209
  []                         \T1/cmtt/m/n/9 equation = "("+equation+")"+str(boar
 d[i][n])[] 
  []
 
 
-Overfull \hbox (20.11697pt too wide) in paragraph at lines 205--205
+Overfull \hbox (20.11697pt too wide) in paragraph at lines 211--211
  []                         \T1/cmtt/m/n/9 if board[i][n] == "." or board[i][n]
 .isdigit():[] 
  []
 
 
-Overfull \hbox (20.11697pt too wide) in paragraph at lines 206--206
+Overfull \hbox (20.11697pt too wide) in paragraph at lines 212--212
  []                             \T1/cmtt/m/n/9 equation += "x["+str(i/2)+"]["+s
 tr(n/2)+"]"[] 
  []
 
 
-Overfull \hbox (119.31775pt too wide) in paragraph at lines 209--209
+Overfull \hbox (119.31775pt too wide) in paragraph at lines 215--215
  []                 \T1/cmtt/m/n/9 equation = equation + "-" + "x[" + str(i/2) 
 + "][" + str((j+1)/2)+"]" + ">0"[] 
  []
 
 
-Overfull \hbox (34.28851pt too wide) in paragraph at lines 220--220
+Overfull \hbox (34.28851pt too wide) in paragraph at lines 226--226
  []                    \T1/cmtt/m/n/9 multiple.append(x[i/2][(j-1)/2] % x[i/2][
 (j+1)/2] == 0)[] 
  []
 
 
-Overfull \hbox (34.28851pt too wide) in paragraph at lines 223--223
+Overfull \hbox (34.28851pt too wide) in paragraph at lines 229--229
  []                    \T1/cmtt/m/n/9 multiple.append(x[(i-1)/2][j/2] % x[(i+1)
 /2][j/2] == 0)[] 
  []
 
 
-Overfull \hbox (17.16156pt too wide) in paragraph at lines 230--230
+Overfull \hbox (17.16156pt too wide) in paragraph at lines 236--236
 [] \T1/cmtt/m/n/10 rules = unique+bigger_than_zero+not_one_exceptions+max_size+
 multiple[] 
  []
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <14.4> on input line 233.
+(Font)              <14.4> on input line 239.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 233.
+(babel)             in language append on input line 239.
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 233.
+(hyperref)                removing `math shift' on input line 239.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (PDFDocEncoding):
-(hyperref)                removing `math shift' on input line 233.
+(hyperref)                removing `math shift' on input line 239.
 
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 234.
+(babel)             in language append on input line 240.
 
-Underfull \hbox (badness 10000) in paragraph at lines 242--244
+Underfull \hbox (badness 10000) in paragraph at lines 248--250
 
  []
 
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 244.
+(babel)             in language append on input line 250.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 244.
+(babel)             in language append on input line 250.
 [6]
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 248.
-
-Underfull \hbox (badness 10000) in paragraph at lines 250--252
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 253--255
-
- []
-
+(babel)             in language append on input line 254.
 
 Underfull \hbox (badness 10000) in paragraph at lines 256--258
 
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 260.
+
+Underfull \hbox (badness 10000) in paragraph at lines 259--261
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 262--264
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 266.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 260.
+(babel)             in language append on input line 266.
 Package babel Info: Redefining portuges shorthand "|
-(babel)             in language append on input line 260.
+(babel)             in language append on input line 266.
 [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 260.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 266.
  (./solveMathemagrids.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 260.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 260.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 266.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 266.
 Package rerunfilecheck Info: File `solveMathemagrids.out' has not changed.
 (rerunfilecheck)             Checksum: A3852A26EA68FDA3656EA42D4FEA5058;1202.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 260.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 266.
  ) 
 Here is how much of TeX's memory you used:
  8252 strings out of 493315
  114372 string characters out of 6137904
- 203083 words of memory out of 5000000
+ 204083 words of memory out of 5000000
  11538 multiletter control sequences out of 15000+600000
  27053 words of font info for 75 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -929,7 +929,7 @@ st/fonts/type1/public/cm-super/sfti1000.pfb></usr/local/texlive/2013/texmf-dist
 onts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2013/texmf-dist/fon
 ts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2013/texmf-dist/fonts
 /type1/public/cm-super/sftt1200.pfb>
-Output written on solveMathemagrids.pdf (8 pages, 407422 bytes).
+Output written on solveMathemagrids.pdf (8 pages, 407488 bytes).
 PDF statistics:
  249 PDF objects out of 1000 (max. 8388607)
  210 compressed objects within 3 object streams
