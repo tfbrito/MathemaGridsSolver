@@ -57,6 +57,7 @@ class DataGrid(GridLayout):
     board_size = "2"
     number = ""
     actual = (-1,-1)
+    save_board = False
 
     def load_from_filechooser(self, filechooser, path):
         global counter
@@ -296,7 +297,7 @@ class DataGrid(GridLayout):
                     Window.unbind(on_key_down=DataGrid._on_keyboard_down)
 
             if DataGrid.all_sel:
-                if (keycode == 76 or keycode == 119 or keycode=22):  # Deleted pressed!
+                if (keycode == 76 or keycode == 119 or keycode==22):  # Deleted pressed!
                     for ch in DataGrid.childs:
                         for c in ch.children:
                             if c.id[:1] == 'x':
@@ -305,7 +306,7 @@ class DataGrid(GridLayout):
                 DataGrid.all_sel = False
                 DataGrid.solution = [row[:] for row in DataGrid.raw_table]
                 DataGrid.count = 0
-            elif text and DataGrid.obj.state == "down" and not (keycode == 76 or keycode == 119 or keycode=22):
+            elif text and DataGrid.obj.state == "down" and not (keycode == 76 or keycode == 119 or keycode==22):
                 loc = list(DataGrid.obj.id[2:])
                 x = int(loc[0])
                 y = int(loc[2])
@@ -323,7 +324,7 @@ class DataGrid(GridLayout):
                     DataGrid.number = ""
                     DataGrid.actual = (-1,-1)
 
-            elif (keycode == 76 or keycode == 119 or keycode=22) and DataGrid.obj.state == "down": # Deleted pressed!
+            elif (keycode == 76 or keycode == 119 or keycode==22) and DataGrid.obj.state == "down": # Deleted pressed!
                 DataGrid.obj.state = "normal"
                 DataGrid.obj.text = '[color=000000][/color]'
                 DataGrid.number = ""
@@ -406,9 +407,11 @@ def settings_panel(self):
     label2 = Label(text='Enable hints', id="lbl_hints")
     label3 = Label(text='Hints only fill empty spaces', id="lbl_hints_all")
     label4 = Label(text='Choose generated board size', id='board_size_input')
+    label5 = Label(text='Save generated boards and solutions', id='lbl_save_board')
     check1 = CheckBox(id="ck_validate", active=DataGrid.validate)
     check2 = CheckBox(id="ck_hints", active=DataGrid.hints)
     check3 = CheckBox(id="ck_hints_all", active=DataGrid.hints_all)
+    check4 = CheckBox(id="ck_save_board", active=DataGrid.save_board)
     check1.bind(active=on_checkbox_active)
     check2.bind(active=on_checkbox_active)
     check3.bind(active=on_checkbox_active)
@@ -423,6 +426,8 @@ def settings_panel(self):
     settings_grid.add_widget(check2)
     settings_grid.add_widget(label3)
     settings_grid.add_widget(check3)
+    settings_grid.add_widget(label5)
+    settings_grid.add_widget(check4)
     settings_grid.add_widget(label4)
     settings_grid.add_widget(size_input)
 
