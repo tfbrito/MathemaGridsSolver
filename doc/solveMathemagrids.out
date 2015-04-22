@@ -4,17 +4,9 @@
 \BOOKMARK [2][-]{subsection.2.2}{Linguagem de Programa\347\343o}{section.2}% 4
 \BOOKMARK [2][-]{subsection.2.3}{Interface Gr\341fica}{section.2}% 5
 \BOOKMARK [1][-]{section.3}{Estrutura}{}% 6
-\BOOKMARK [2][-]{subsection.3.1}{gameGUI.py}{section.3}% 7
-\BOOKMARK [2][-]{subsection.3.2}{generate\137board.py}{section.3}% 8
-\BOOKMARK [2][-]{subsection.3.3}{parsing.py}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.4}{solveMathemaGrids.py}{section.3}% 10
-\BOOKMARK [1][-]{section.4}{Execu\347\343o}{}% 11
-\BOOKMARK [2][-]{subsection.4.1}{Python}{section.4}% 12
-\BOOKMARK [2][-]{subsection.4.2}{Kivy}{section.4}% 13
-\BOOKMARK [2][-]{subsection.4.3}{Z3}{section.4}% 14
-\BOOKMARK [2][-]{subsection.4.4}{pyparsing}{section.4}% 15
-\BOOKMARK [1][-]{section.5}{Ficheiros input}{}% 16
-\BOOKMARK [2][-]{subsection.5.1}{Codifica\347\343o do MathemaGrids}{section.5}% 17
-\BOOKMARK [1][-]{section.6}{generate\137board.py}{}% 18
-\BOOKMARK [2][-]{subsection.6.1}{Hints}{section.6}% 19
-\BOOKMARK [2][-]{subsection.6.2}{Gera\347\343o de tabuleiros}{section.6}% 20
+\BOOKMARK [1][-]{section.4}{Execu\347\343o}{}% 7
+\BOOKMARK [1][-]{section.5}{Ficheiros input}{}% 8
+\BOOKMARK [2][-]{subsection.5.1}{Codifica\347\343o do MathemaGrids}{section.5}% 9
+\BOOKMARK [1][-]{section.6}{generate\137board.py}{}% 10
+\BOOKMARK [2][-]{subsection.6.1}{Hints}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.2}{Gera\347\343o de tabuleiros}{section.6}% 12
