@@ -54,6 +54,8 @@ class DataGrid(GridLayout):
     hints = False
     hints_all = False
     board_size = "2"
+    number = ""
+    actual = (-1,-1)
 
     def load_from_filechooser(self, filechooser, path):
         global counter
@@ -268,9 +270,22 @@ class DataGrid(GridLayout):
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
             info_lbl.text = 'MathemaGrids puzzle'
-            Window.unbind(on_key_down=DataGrid._on_keyboard_down)
+
+            def update_text(x,y,text,value):
+                if DataGrid.validate:
+                    if DataGrid.raw_table[x][y].as_string() == text:
+                        DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                        DataGrid.solution[x][y] = "OK"
+                    else:
+                        DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
+                else:
+                    DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                if(value):
+                    DataGrid.obj.state = "normal"
+                    Window.unbind(on_key_down=DataGrid._on_keyboard_down)
+
             if DataGrid.all_sel:
-                if keycode == 76:  # Deleted pressed!
+                if keycode == 76 or keycode == 119:  # Deleted pressed!
                     for ch in DataGrid.childs:
                         for c in ch.children:
                             if c.id[:1] == 'x':
@@ -279,26 +294,26 @@ class DataGrid(GridLayout):
                 DataGrid.all_sel = False
                 DataGrid.solution = [row[:] for row in DataGrid.raw_table]
                 DataGrid.count = 0
-            elif text and DataGrid.obj.state == "down":
+            elif text and DataGrid.obj.state == "down" and not (keycode == 76 or keycode == 119):
+                loc = list(DataGrid.obj.id[2:])
+                x = int(loc[0])
+                y = int(loc[2])
+                if(DataGrid.actual != (x,y)):
+                    DataGrid.number = ""
                 if text.isdigit():
-                    loc = list(DataGrid.obj.id[2:])
-                    x = int(loc[0])
-                    y = int(loc[2])
-                    if DataGrid.validate:
-                        if DataGrid.raw_table[x][y].as_string() == text:
-                            DataGrid.obj.state = "normal"
-                            DataGrid.obj.text = '[color=000000]' + text + '[/color]'
-                            DataGrid.solution[x][y] = "OK"
-                        else:
-                            DataGrid.obj.state = "normal"
-                            DataGrid.obj.text = '[color=FF0000]' + text + '[/color]'
-                    else:
-                        DataGrid.obj.state = "normal"
-                        DataGrid.obj.text = '[color=000000]' + text + '[/color]'
+                    DataGrid.number += text
+                    DataGrid.actual = (x,y)
+                    update_text(x,y,DataGrid.number,False)
+                elif keycode == 36: #Enter pressed!
+                    update_text(x,y,DataGrid.number,True)
+                    DataGrid.number = ""
+                    DataGrid.actual = (-1,-1)
 
-            elif keycode == 76 and DataGrid.obj.state == "down": # Deleted pressed!
+            elif (keycode == 76 or keycode == 119) and DataGrid.obj.state == "down": # Deleted pressed!
                 DataGrid.obj.state = "normal"
                 DataGrid.obj.text = '[color=000000][/color]'
+                DataGrid.number = ""
+                DataGrid.actual = (-1,-1)
 
             return True
 
