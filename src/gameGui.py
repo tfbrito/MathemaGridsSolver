@@ -45,19 +45,20 @@ class HeaderLabel(Label):
 
 class DataGrid(GridLayout):
     childs = []
+    solution = []
+    raw_table = []
     obj = 0
     obj_text = None
     all_sel = False
-    count = 0
-    solution = []
-    raw_table = []
     validate = False
     hints = False
     hints_all = False
+    save_board = False
+    count = 0
     board_size = "2"
     number = ""
     actual = (-1,-1)
-    save_board = False
+    
 
     def load_from_filechooser(self, filechooser, path):
         global counter
@@ -359,6 +360,9 @@ class DataGrid(GridLayout):
             self.add_row(res[row], calculate_col_size(len(res)),self)
         DataGrid.solution = sol
         DataGrid.raw_table = [row[:] for row in sol]
+        if(DataGrid.save_board):
+            parsing.save_board(res,"board")
+            parsing.save_board(sol,"solution")
 
     def __init__(self, body_data, **kwargs):
         super(DataGrid, self).__init__(**kwargs)
@@ -376,6 +380,7 @@ class DataGrid(GridLayout):
 checkbox1 = DataGrid.validate
 checkbox2 = DataGrid.hints
 checkbox3 = DataGrid.hints_all
+checkbox4 = DataGrid.save_board
 board_size_input = DataGrid.board_size
 
 
@@ -384,6 +389,7 @@ def settings_panel(self):
     global checkbox1
     global checkbox2
     global checkbox3
+    global checkbox4
     global board_size_input
 
     def on_checkbox_active(checkbox, value):
@@ -396,11 +402,15 @@ def settings_panel(self):
         elif checkbox.id == "ck_hints_all":
             global checkbox3
             checkbox3 = value
+        elif checkbox.id == "ck_save_board":
+            global checkbox4
+            checkbox4 = value
 
     def save_settings(self):
         DataGrid.validate = checkbox1
         DataGrid.hints = checkbox2
         DataGrid.hints_all = checkbox3
+        DataGrid.save_board = checkbox4
         DataGrid.board_size = size_input.text
 
     label1 = Label(text='Validate moves in real time', id="lbl_validate")
@@ -415,6 +425,7 @@ def settings_panel(self):
     check1.bind(active=on_checkbox_active)
     check2.bind(active=on_checkbox_active)
     check3.bind(active=on_checkbox_active)
+    check4.bind(active=on_checkbox_active)
 
     size_input = Spinner(text=DataGrid.board_size, values=('2', '3', '4'), size=(100, 44))
     size_input.is_open
