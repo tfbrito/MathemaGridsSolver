@@ -296,7 +296,7 @@ class DataGrid(GridLayout):
                     Window.unbind(on_key_down=DataGrid._on_keyboard_down)
 
             if DataGrid.all_sel:
-                if keycode == 76 or keycode == 119:  # Deleted pressed!
+                if (keycode == 76 or keycode == 119 or keycode=22):  # Deleted pressed!
                     for ch in DataGrid.childs:
                         for c in ch.children:
                             if c.id[:1] == 'x':
@@ -305,7 +305,7 @@ class DataGrid(GridLayout):
                 DataGrid.all_sel = False
                 DataGrid.solution = [row[:] for row in DataGrid.raw_table]
                 DataGrid.count = 0
-            elif text and DataGrid.obj.state == "down" and not (keycode == 76 or keycode == 119):
+            elif text and DataGrid.obj.state == "down" and not (keycode == 76 or keycode == 119 or keycode=22):
                 loc = list(DataGrid.obj.id[2:])
                 x = int(loc[0])
                 y = int(loc[2])
@@ -323,7 +323,7 @@ class DataGrid(GridLayout):
                     DataGrid.number = ""
                     DataGrid.actual = (-1,-1)
 
-            elif (keycode == 76 or keycode == 119) and DataGrid.obj.state == "down": # Deleted pressed!
+            elif (keycode == 76 or keycode == 119 or keycode=22) and DataGrid.obj.state == "down": # Deleted pressed!
                 DataGrid.obj.state = "normal"
                 DataGrid.obj.text = '[color=000000][/color]'
                 DataGrid.number = ""
