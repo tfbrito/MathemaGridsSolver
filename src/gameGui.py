@@ -314,7 +314,10 @@ class DataGrid(GridLayout):
                 if text.isdigit():
                     DataGrid.number += text
                     DataGrid.actual = (x,y)
-                    update_text(x,y,DataGrid.number,False)
+                    if(DataGrid.board_size == str(4)):
+                        update_text(x,y,DataGrid.number,False)
+                    else:
+                        update_text(x,y,DataGrid.number,True)
                 elif keycode == 36: #Enter pressed!
                     update_text(x,y,DataGrid.number,True)
                     DataGrid.number = ""
