@@ -23,6 +23,7 @@ from random import randrange
 from solveMathemaGrids import complete_board
 from solveMathemaGrids import calculate_col_size
 from solveMathemaGrids import solve
+from copy import copy, deepcopy
 
 Builder.load_string('''
 <CLabel>:
@@ -69,14 +70,23 @@ class DataGrid(GridLayout):
         res = parsing.read_board(filechooser.selection[0])
 
         complete_board(res)
-        self.cols = len(res[1])
-        self.rows = len(res)
+        self.cols = len(res)
+        self.rows = len(res[0])
         self.spacing = [1, 1]
         for row in range(len(res)):
             self.add_row(res[row], calculate_col_size(len(res)), self)
 
-        #DataGrid.solution = res[1] colocar aqui a solução!
-        #DataGrid.raw_table = [row[:] for row in DataGrid.solution]
+        sol = solve(res)
+        DataGrid.solution = sol
+        sol_copy = []
+        for i in range(len(sol)):
+            sol_copy.append([])
+            for j in range(len(sol[i])):
+                sol_copy[i].append(sol[i][j])
+
+
+        DataGrid.raw_table = [row for row in sol_copy]
+        DataGrid.board_size = str(len(sol))
 
     def open(self, instance, **kwargs):
         info_lbl.text = 'MathemaGrids puzzle'
@@ -214,6 +224,7 @@ class DataGrid(GridLayout):
                     if str(c.text).find(str(DataGrid.raw_table[xp][yp])) == -1:
                         info_lbl.text = '[color=FF0000]Invalid Solution![/color]'
                         return
+
         info_lbl.text = '[color=32CD32]Victory![/color]'
 
     def hint(self,instance, **kwargs):

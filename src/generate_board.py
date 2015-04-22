@@ -3,6 +3,7 @@ import random
 
 from z3 import Int, And, Not, Distinct, Solver, sat
 
+
 def generate_symbols(size):
     board = []
     symbols = ['+', '-', '*', '/']
