@@ -69,6 +69,7 @@ class DataGrid(GridLayout):
         DataGrid.all_sel = False
         DataGrid.count = 0
         DataGrid.reset_board(self)
+        DataGrid.number = ""
         res = parsing.read_board(filechooser.selection[0])
 
         complete_board(res)
@@ -229,10 +230,20 @@ class DataGrid(GridLayout):
 
         info_lbl.text = '[color=32CD32]Victory![/color]'
 
-    def hint(self,instance, **kwargs):
-        if(DataGrid.hints and (DataGrid.count < len(DataGrid.solution) * len(DataGrid.solution[0]))):
-            childs = self.parent.children
+    
 
+    def hint(self,instance, **kwargs):
+        childs = self.parent.children
+
+        def isfull(childs):
+            for ch in childs:
+                for c in ch.children:
+                    if (c.text[14:-8] == ""):
+                        return False
+            return True
+
+        if(DataGrid.hints and (DataGrid.count < len(DataGrid.solution) * len(DataGrid.solution[0])) and not isfull(childs)):
+            
             def check(childs,random_index_x,random_index_y,my_id):
                 done = False
                 sol = str(DataGrid.solution[random_index_x][random_index_y])
@@ -311,7 +322,7 @@ class DataGrid(GridLayout):
                 loc = list(DataGrid.obj.id[2:])
                 x = int(loc[0])
                 y = int(loc[2])
-                if(DataGrid.actual != (x,y)):
+                if(DataGrid.actual != (x,y) or DataGrid.board_size != str(4)):
                     DataGrid.number = ""
                 if text.isdigit():
                     DataGrid.number += text
@@ -349,6 +360,7 @@ class DataGrid(GridLayout):
         DataGrid.all_sel = False
         DataGrid.count = 0
         DataGrid.reset_board(self)
+        DataGrid.number = ""
         size= int(DataGrid.board_size)
         res, sol = generate_board.generate(size, 0)
 
