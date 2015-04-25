@@ -65,11 +65,15 @@ No que toca à Interface Gráfica, foi feito um trabalho de pesquisa prévio pel
 {\sc{Kivy}} tráta-se de uma Framework multi-plataforma para Python, correndo em Linux, Windows, OS X, Android e iOS. É uma ferramenta grátis e é ``GPU Accelerated". 
 
 \section{Estrutura}
-O Projeto é dividido em quatro módulos:
+O Projeto é dividido em cinco módulos:
 \begin{itemize}
+\item{\texttt{game.py}
+
+Este é o módulo principal do projecto, sendo responsável pela inuficação de todas as funcionalidades e funcionamento das mesmas.}
+
 \item{\texttt{gameGUI.py}
 
-Este é o módulo responsável por toda a interface grática. É ele o principal, sendo quem inicializa o jogo e utiliza os restantes módulos de forma a executar as respetivas funções.}
+Este é o módulo responsável por toda a interface grática. É ele quem inicializa o jogo e utiliza os restantes módulos de forma a executar as respetivas funções.}
 
 \item{\texttt{generate\_board.py}
 
@@ -87,10 +91,15 @@ Este trata-se de um módulo de suporte onde temos algunas funções auxiliares b
 \section{Execução}
 Para a execução do programa basta executar na consola :
 \begin{verbatim}
-$ python gameGUI.py
+$ python game.py
 \end{verbatim}
 
-tendo atenção ás ás seguintes dependencias:
+Existem flags opcionais que podem ser usadas:
+\begin{itemize}
+\item{ {\bf{- -console}} : permite a execução do software em modo consola. Deve ser seguido do nome/localização do ficheiro de input}
+\end{itemize}
+
+E tendo atenção ás ás seguintes dependencias:
 \begin{itemize}
 \item{ {\bf{Python}} : Disponivel já de raiz com o Linux e OSX, mas também disponivel para Windows.}
 \item{ {\bf{Kivy}} : Necessário $Kivy$ v1.9.0 disponivel no website {\url{http://kivy.org/}}.
