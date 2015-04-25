@@ -382,6 +382,18 @@ class DataGrid(GridLayout):
             parsing.save_board(res,"board",True)
             parsing.save_board(sol,"solution",False)
 
+    def get_solution(self, instance, **kwargs):
+        if(DataGrid.solution != []):
+            info_lbl.text = '[color=008000]Solution allready present in system[/color]'
+        else:
+            sol = solve(res)
+            if(sol!=[]):
+                info_lbl.text = '[color=008000]Found solution and loaded![/color]'
+                DataGrid.solution = sol
+                DataGrid.raw_table = [row[:] for row in sol]
+            else:
+                info_lbl.text = '[color=008000]No solution found. Maybe increase timeout?[/color]'  
+
     def __init__(self, body_data, **kwargs):
         super(DataGrid, self).__init__(**kwargs)
         self.size_hint_y = None
@@ -498,6 +510,7 @@ select_all_btn = Button(text="Select All", on_press=partial(grid.select_all))
 unselect_all_btn = Button(text="Unselect All", on_press=partial(grid.unselect_all))
 hint_btn = Button(text="Hint", on_press=partial(grid.hint))
 validate_btn = Button(text="Validate", on_press=partial(grid.validate))
+get_btn = Button(text="Get Solution", on_press=partial(grid.get_solution))
 settings_btn = Button(text="Settings", on_press=settings_panel)
 
 info_lbl = Label(text='MathemaGrids puzzle', id="lbl_info", markup=True)
@@ -509,6 +522,7 @@ btn_grid.add_widget(select_all_btn)
 btn_grid.add_widget(unselect_all_btn)
 btn_grid.add_widget(hint_btn)
 btn_grid.add_widget(validate_btn)
+btn_grid.add_widget(get_btn)
 btn_grid.add_widget(settings_btn)
 btn_grid.add_widget(info_lbl)
 
