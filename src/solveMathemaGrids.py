@@ -127,17 +127,14 @@ def solve(board):
     s = Solver()
 
     s.add(rules)
-
+    s.set("soft_timeout", 10000)
     if s.check() == sat:
-
         m = s.model()
         r = [[m.evaluate(x[i][j]) for j in range(size)]
              for i in range(size)]
         return r
     else:
         return []
-
-
 
 def calculate_col_size(num_cols):
     size = 0.1

@@ -4,6 +4,12 @@ sys.path
 
 from pyparsing import Word, Literal, nums, Forward, ParseException
 
+def remove_from_board(board):
+    for i in range(len(board)):
+        if i % 2 != 0:
+            del board[i][-1]
+            del board[i][-1]
+
 def read_board(file):
     integer = Word(nums)  # simple unsigned integer
     arithOp = Word("+-*/", max=1)  # arithmetic operators
@@ -46,7 +52,7 @@ def read_board(file):
         line = f.readline()
     return table
 
-def save_board(board_to_save, text_file_name):
+def save_board(board_to_save, text_file_name,normal):
     name = text_file_name+'.txt'  # Name of text file coerced with +.txt
 
     try:
@@ -55,13 +61,17 @@ def save_board(board_to_save, text_file_name):
         print('Something went wrong! Can\'t tell what?')
         sys.exit(0)  # quit Python
 
-    for line in range(len(board_to_save)):
-        for column in range(len(board_to_save[line])):
-            if line % 2 == 0:
-                board_file.write(str(board_to_save[line][column]))
-            else:
-                if column <= len(board_to_save[1]):
+    if(normal):
+        remove_from_board(board_to_save)
+        for line in range(len(board_to_save)):
+            for column in range(len(board_to_save[line])):
+                if line % 2 == 0:
                     board_file.write(str(board_to_save[line][column]))
-        board_file.write("\n")
+                else:
+                    if column <= len(board_to_save[1]):
+                        board_file.write(str(board_to_save[line][column]))
+            board_file.write("\n")
+    else:
+        board_file.write(str(board_to_save))    
 
     board_file.close()

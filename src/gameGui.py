@@ -218,17 +218,20 @@ class DataGrid(GridLayout):
 
     def validate(self, instance, **kwargs):
         DataGrid.childs = self.parent.children
-        for ch in DataGrid.childs:
-            for c in ch.children:
-                if re.search("x_\d+_\d+", str(c.id)):
-                    index_x, index_y = re.findall("\d+", c.id)
-                    xp = int(index_x)
-                    yp = int(index_y)
-                    if str(c.text).find(str(DataGrid.raw_table[xp][yp])) == -1:
-                        info_lbl.text = '[color=FF0000]Invalid Solution![/color]'
-                        return
+        if(DataGrid.solution != []):
+            for ch in DataGrid.childs:
+                for c in ch.children:
+                    if re.search("x_\d+_\d+", str(c.id)):
+                        index_x, index_y = re.findall("\d+", c.id)
+                        xp = int(index_x)
+                        yp = int(index_y)
+                        if str(c.text).find(str(DataGrid.raw_table[xp][yp])) == -1:
+                            info_lbl.text = '[color=FF0000]Invalid Solution![/color]'
+                            return
 
-        info_lbl.text = '[color=32CD32]Victory![/color]'
+            info_lbl.text = '[color=32CD32]Victory![/color]'
+        else:
+            info_lbl.text = '[color=008000]No solution available[/color]'
 
     
 
@@ -242,61 +245,64 @@ class DataGrid(GridLayout):
                         return False
             return True
 
-        if(DataGrid.hints and (DataGrid.count < len(DataGrid.solution) * len(DataGrid.solution[0])) and not isfull(childs)):
-            
-            def check(childs,random_index_x,random_index_y,my_id):
-                done = False
-                sol = str(DataGrid.solution[random_index_x][random_index_y])
-                for ch in childs:
-                    for c in ch.children:                        
-                        if(str(c.id) == my_id and not DataGrid.hints_all):
-                            if(c.text[14:-8] != sol):
-                                c.state = "normal" 
-                                c.text = '[color=000000]' + sol + '[/color]'
-                                DataGrid.solution[random_index_x][random_index_y] = "OK"
-                                return True
-                        elif(str(c.id) == my_id and DataGrid.hints_all):
-                            if(c.text == '[color=000000][/color]' or c.text == '[color=FF0000][/color]'):
-                                c.state = "normal" 
-                                c.text = '[color=000000]' + sol + '[/color]'
-                                DataGrid.solution[random_index_x][random_index_y] = "OK"
-                                return True
-                            else: 
-                                return -1
-                return False
+        if(DataGrid.solution != []):
+            if(DataGrid.hints and (DataGrid.count < len(DataGrid.solution) * len(DataGrid.solution[0])) and not isfull(childs)):
+                
+                def check(childs,random_index_x,random_index_y,my_id):
+                    done = False
+                    sol = str(DataGrid.solution[random_index_x][random_index_y])
+                    for ch in childs:
+                        for c in ch.children:                        
+                            if(str(c.id) == my_id and not DataGrid.hints_all):
+                                if(c.text[14:-8] != sol):
+                                    c.state = "normal" 
+                                    c.text = '[color=000000]' + sol + '[/color]'
+                                    DataGrid.solution[random_index_x][random_index_y] = "OK"
+                                    return True
+                            elif(str(c.id) == my_id and DataGrid.hints_all):
+                                if(c.text == '[color=000000][/color]' or c.text == '[color=FF0000][/color]'):
+                                    c.state = "normal" 
+                                    c.text = '[color=000000]' + sol + '[/color]'
+                                    DataGrid.solution[random_index_x][random_index_y] = "OK"
+                                    return True
+                                else: 
+                                    return -1
+                    return False
 
-            gotit = False
-            gotit2 = False
-            while(not gotit):
-                if(DataGrid.count >= len(DataGrid.solution) * len(DataGrid.solution[0])):
-                    info_lbl.text = '[color=008000]No more hints![/color]'
-                    gotit = True
-                    gotit2 = True
-                else:
-                    while(not gotit2):
-                        random_index_x = randrange(0,len(DataGrid.solution))
-                        random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
-                        if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
-                            gotit2 = True
-                            gotit = True
-                    my_id = "x_" + str(random_index_x) + "_" + str(random_index_y)
-                    res = check(childs,random_index_x,random_index_y,my_id)
-                    if(res == True):
+                gotit = False
+                gotit2 = False
+                while(not gotit):
+                    if(DataGrid.count >= len(DataGrid.solution) * len(DataGrid.solution[0])):
+                        info_lbl.text = '[color=008000]No more hints![/color]'
                         gotit = True
-                        DataGrid.count += 1
-                    elif(res == -1):
-                        gotit2 = False
-                        gotit = False
-        elif(not DataGrid.hints):
-            info_lbl.text = '[color=FF0000]Hints are disabled!\nEnable them on the settings panel.[/color]'
+                        gotit2 = True
+                    else:
+                        while(not gotit2):
+                            random_index_x = randrange(0,len(DataGrid.solution))
+                            random_index_y = randrange(0,len(DataGrid.solution[random_index_x]))
+                            if(str(DataGrid.solution[random_index_x][random_index_y]) != "OK"):
+                                gotit2 = True
+                                gotit = True
+                        my_id = "x_" + str(random_index_x) + "_" + str(random_index_y)
+                        res = check(childs,random_index_x,random_index_y,my_id)
+                        if(res == True):
+                            gotit = True
+                            DataGrid.count += 1
+                        elif(res == -1):
+                            gotit2 = False
+                            gotit = False
+            elif(not DataGrid.hints):
+                info_lbl.text = '[color=FF0000]Hints are disabled!\nEnable them on the settings panel.[/color]'
+            else:
+                info_lbl.text = '[color=008000]No more hints![/color]'
         else:
-            info_lbl.text = '[color=008000]No more hints![/color]'
+            info_lbl.text = '[color=008000]No solution available[/color]'
 
     def _on_keyboard_down(self, keyboard, keycode, text, modifiers):
             info_lbl.text = 'MathemaGrids puzzle'
 
             def update_text(x,y,text,value):
-                if DataGrid.validate:
+                if DataGrid.validate and DataGrid.solution != []:
                     if DataGrid.raw_table[x][y].as_string() == text:
                         DataGrid.obj.text = '[color=000000]' + text + '[/color]'
                         DataGrid.solution[x][y] = "OK"
@@ -373,8 +379,8 @@ class DataGrid(GridLayout):
         DataGrid.solution = sol
         DataGrid.raw_table = [row[:] for row in sol]
         if(DataGrid.save_board):
-            parsing.save_board(res,"board")
-            parsing.save_board(sol,"solution")
+            parsing.save_board(res,"board",True)
+            parsing.save_board(sol,"solution",False)
 
     def __init__(self, body_data, **kwargs):
         super(DataGrid, self).__init__(**kwargs)
