@@ -73,16 +73,12 @@ def generate_puzzle():
 	time.sleep(5)
 	menu()
 
-def play():
-   	print "Let's play a game!"
-
 def exit():
 	print "Exiting...."
 	sys.exit(1)
 
 options = {1 : solve_puzzle,
            2 : generate_puzzle,
-           3 : play,
            9 : exit,
 }
 
@@ -97,7 +93,6 @@ def menu():
 	print "----------------"
 	print "1 - Solve Puzzle from file"
 	print "2 - Generate puzzle"
-	print "3 - Play puzzle"
 	print "9 - Exit"
 	while(flag):
 		var = input("What is your choise? ")
